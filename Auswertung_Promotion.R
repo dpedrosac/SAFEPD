@@ -143,33 +143,9 @@ qqnorm(SAFEPD$age)
 qqline(SAFEPD$age)
 
 ## SAFEPDQA umkodieren / dichotomisieren, Test
-SAFEPD$lack_of_information_dich <- cut(SAFEPD$lack_of_information, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$uncertain_future_dich <- cut(SAFEPD$uncertain_future, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$chaging_symptom_severity_dich <- cut(SAFEPD$chaging_symptom_severity, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$gait_insecurity_fall_dich <- cut(SAFEPD$gait_insecurity_fall, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$pain_dich <- cut(SAFEPD$pain, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$gastrointestinal_symptoms_dich <- cut(SAFEPD$gastrointestinal_symptoms, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$urinary_symptoms_dich <- cut(SAFEPD$urinary_symptoms, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$mental_abilities_dich <- cut(SAFEPD$mental_abilities, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$mental_symptoms_dich <- cut(SAFEPD$mental_symptoms, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$other_disease_dich <- cut(SAFEPD$other_disease, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$nursing_care_dich <- cut(SAFEPD$nursing_care, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$side_effects_complications_dich <- cut(SAFEPD$side_effects_complications, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$access_healthcare_dich <- cut(SAFEPD$access_healthcare, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$communication_with_me_dich <- cut(SAFEPD$communication_with_me, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$communication_between_professionals_dich <- cut(SAFEPD$communication_between_professionals, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$loneliness_dich <- cut(SAFEPD$loneliness, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$everyday_problems_dich <- cut(SAFEPD$everyday_problems, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$daily_routine_dich <- cut(SAFEPD$daily_routine, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$overload_among_people_dich <- cut(SAFEPD$overload_among_people, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$pejorativ_looks_comments_dich <- cut(SAFEPD$pejorativ_looks_comments, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$family_role_dich <- cut(SAFEPD$family_role, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$conflicts_with_relatives_dich <- cut(SAFEPD$conflicts_with_relatives, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$victim_to_crime_dich <- cut(SAFEPD$victim_to_crime, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$financial_worries_dich <- cut(SAFEPD$financial_worries, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$not_at_peace_with_myself_dich <- cut(SAFEPD$not_at_peace_with_myself, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$participation_in_road_traffic_dich <- cut(SAFEPD$participation_in_road_traffic, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
-SAFEPD$overall_situation_dich <- cut(SAFEPD$overall_situation, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
+SAFEPD_new <- SAFEPD
+SAFEPD_new[, VarSAFEPDQA] <- lapply(SAFEPD[, VarSAFEPDQA], function(x) ifelse(x %in% 1:3, "eher zutreffend", "eher nicht zutreffend"))
+
 
 
 
