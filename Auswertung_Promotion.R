@@ -1,6 +1,6 @@
 ## Datei laden
 library(readxl)
-SAFEPD <- read_excel("Library/CloudStorage/OneDrive-Persönlich/Documents/Promotion/SAFEPD.xlsx", 
+SAFEPD <- read_excel("~/Library/CloudStorage/OneDrive-Persönlich/Documents/Promotion/SAFEPD.xlsx", 
                      col_types = c("numeric", "numeric", "numeric", 
                                    "numeric", "numeric", "numeric", "numeric", "numeric", 
                                    "numeric", "numeric", "numeric", "numeric", "numeric", 
@@ -42,45 +42,36 @@ VarSAFEPDQA <- c("lack_of_information", "uncertain_future",	"chaging_symptom_sev
 VarUPDRS <- c("UPDRS_1_7",	"UPDRS_1_8",	"UPDRS_1_9",	"UPDRS_1_10",	"UPDRS_1_11",	"UPDRS_1_12",	"UPDRS_1_13", "UPDRS_2_1", "UPDRS_2_2",	"UPDRS_2_3",	"UPDRS_2_4",	"UPDRS_2_5",	"UPDRS_2_6",	"UPDRS_2_7",	"UPDRS_2_8",	"UPDRS_2_9",	"UPDRS_2_10",	"UPDRS_2_11",	"UPDRS_2_12",	"UPDRS_2_13")
 VarUPDRS_Score <- c("UPDRS_I_Score", "UPDRS_II_Score")
 VarFIMA <- 
-
-## deskriptive Statistik demographische Variablen
   
+  ## deskriptive Statistik demographische Variablen
+  
+  table_gender <- cbind(Absolut = table(factor(SAFEPD$gender, levels = c(0, 1), labels = c("weiblich", "männlich"))), 
+                        Relativ = round(prop.table(table(factor(SAFEPD$gender, levels = c(0, 1), labels = c("weiblich", "männlich")))) * 100, 2))
+
+table_nationality <- cbind(Absolut = table(factor(SAFEPD$nationality, levels = c(0, 1, 2), labels = c("deutsch", "andere", "dual"))), 
+                           Relativ = round(prop.table(table(factor(SAFEPD$nationality, levels = c(0, 1, 2), labels = c("deutsch", "andere", "dual")))) * 100, 2))
+
+table_martial_status <- cbind(Absolut = table(factor(SAFEPD$martial_status, levels = c(0, 1, 2, 3), labels = c("ledig", "verheiratet", "geschieden", "verwitwet"))), 
+                              Relativ = round(prop.table(table(factor(SAFEPD$martial_status, levels = c(0, 1, 2, 3), labels = c("ledig", "verheiratet", "geschieden", "verwitwet")))) * 100, 2))
+
+table_persons_houshold <- cbind(Absolut = table(SAFEPD$persons_houshold), Relativ = round(prop.table(table(SAFEPD$persons_houshold)) * 100, 2))
+
+table_school_graduation <- cbind(Absolut = table(factor(SAFEPD$school_graduation, levels = c(0, 1, 2, 3, 4), labels = c("kein Abschluss", "Hauptschule", "Realschule", "Abitur", "sonstiger Abschluss"))), 
+                                 Relativ = round(prop.table(table(factor(SAFEPD$school_graduation, levels = c(0, 1, 2, 3, 4), labels = c("kein Abschluss", "Hauptschule", "Realschule", "Abitur", "sonstiger Abschluss")))) * 100, 2))
+
+table_professional_graduation <- cbind(Absolut = table(factor(SAFEPD$professional_graduation, levels = c(0, 1, 2, 3, 4, 5), labels = c("kein Abschluss", "Berufsschule", "Fachschule", "Ingenieurschule", "Hochschule", "sonstiger Abschluss"))), 
+                                       Relativ = round(prop.table(table(factor(SAFEPD$professional_graduation, levels = c(0, 1, 2, 3, 4, 5), labels = c("kein Abschluss", "Berufsschule", "Fachschule", "Ingenieurschule", "Hochschule", "sonstiger Abschluss")))) * 100, 2))
+
+table_employment_status <- cbind(Absolut = table(factor(SAFEPD$employment_status, levels = c(0, 1, 2, 3, 4, 5, 6), labels = c("Vollzeit", "Teilzeit", "Hausmann/Hausfrau", "arbeitslos", "berentet", "arbeitsunfähig", "sonstiges"))), 
+                                 Relativ = round(prop.table(table(factor(SAFEPD$employment_status, levels = c(0, 1, 2, 3, 4, 5, 6), labels = c("Vollzeit", "Teilzeit", "Hausmann/Hausfrau", "arbeitslos", "berentet", "arbeitsunfähig", "sonstiges")))) * 100, 2))
+
 describe(SAFEPD$age, IQR = TRUE)
-hist_alter <- hist(SAFEPD$age, xlab="Alter", ylab="Häufigkeit", main="Histogramm Alter", col="steelblue", ylim=c(0,50), xlim=c(30,90)) ##x-Grenzen?
+hist_alter <- hist(SAFEPD$age, xlab="Alter", ylab="Häufigkeit", main="Histogramm Alter", col="steelblue", ylim=c(0,70), xlim=c(30,90), breaks=5) ##x-Grenzen?
 text(hist_alter$mids, hist_alter$counts, labels = hist_alter$counts, adj=c(0.5, -0.5))
-
-ah_gender <- table(SAFEPD$gender)
-rh_gender <- round(prop.table(table(SAFEPD$gender))*100,2) ##NA einfügen?
-table_gender <- cbind(ah_gender, rh_gender)
-
-ah_nationality <- table(SAFEPD$nationality)
-rh_nationality <- round(prop.table(table(SAFEPD$nationality))*100,2)
-table_nationality <- cbind(ah_nationality, rh_nationality)
-
-ah_martial_status <- table(SAFEPD$martial_status)
-rh_martial_status <- round(prop.table(table(SAFEPD$martial_status))*100,2)
-table_martial_status <- cbind(ah_martial_status, rh_martial_status)
 
 describe(SAFEPD$years_since_diagnosis, IQR = TRUE)
 hist_years_since_diagnosis <- hist(SAFEPD$years_since_diagnosis, xlab="Krankheitsdauer", ylab="Häufigkeit", main="Histogramm Krankheitsdauer", col="steelblue", ylim=c(0,80))
 text(hist_years_since_diagnosis$mids, hist_years_since_diagnosis$counts, labels = hist_years_since_diagnosis$counts, adj = c(0.5, -0.5))
-
-ah_persons_houshold <- table(SAFEPD$persons_houshold)
-rh_persons_houshold <- round(prop.table(table(SAFEPD$persons_houshold))*100,2)
-table_persons_houshold <- cbind(ah_persons_houshold, rh_persons_houshold)
-
-ah_school_graduation <- table(SAFEPD$school_graduation)
-rh_school_graduation <- round(prop.table(table(SAFEPD$school_graduation))*100,2)
-table_school_graduation <- cbind(ah_school_graduation, rh_school_graduation
-                                 )
-ah_professional_graduation <- table(SAFEPD$professional_graduation)
-rh_professional_graduation <- round(prop.table(table(SAFEPD$professional_graduation))*100,2)
-table_professional_graduation <- cbind(ah_professional_graduation, rh_professional_graduation
-                                       )
-ah_employment_status <- table(SAFEPD$employment_status)
-rh_employment_status <- round(prop.table(table(SAFEPD$employment_status))*100,2)
-table_employment_status <- cbind(ah_employment_status, rh_employment_status)
-
 
 Table_SozDem <- CreateCatTable( ##kann man das irgendwie in einem ansehlichen Format ausgeben?
   vars = VarDemographic,
@@ -206,11 +197,5 @@ SAFEPD$not_at_peace_with_myself_dich <- cut(SAFEPD$not_at_peace_with_myself, bre
 SAFEPD$participation_in_road_traffic_dich <- cut(SAFEPD$participation_in_road_traffic, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
 SAFEPD$overall_situation_dich <- cut(SAFEPD$overall_situation, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
 
-
-## UPDRS_Score umkodieren, Test
-## Cut-Off Werte vorhanden? -> Mit Anna besprechen, UPDRS I nicht alle Fragen abgefragt
-SAFEPD$UPDRS_I_Score_dich <- cut(SAFEPD$UPDRS_I_Score, breaks=c(0, 1, 2, Inf), right=TRUE, labels=c("mild", "moderat", "schwer"))
-
-SAFEPD$UPDRS_II_Score_dich <- cut(SAFEPD$UPDRS_II_Score, breaks=c(0, 1, 2, Inf), right = TRUE, labels = c("mild", "moderat", "schwer"))
 
 
