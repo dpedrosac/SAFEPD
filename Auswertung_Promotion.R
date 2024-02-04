@@ -43,9 +43,8 @@ VarUPDRS <- c("UPDRS_1_7",	"UPDRS_1_8",	"UPDRS_1_9",	"UPDRS_1_10",	"UPDRS_1_11",
 VarUPDRS_Score <- c("UPDRS_I_Score", "UPDRS_II_Score")
 VarFIMA <- 
   
-  ## deskriptive Statistik demographische Variablen
-  
-  table_gender <- cbind(Absolut = table(factor(SAFEPD$gender, levels = c(0, 1), labels = c("weiblich", "männlich"))), 
+## deskriptive Statistik demographische Variablen
+table_gender <- cbind(Absolut = table(factor(SAFEPD$gender, levels = c(0, 1), labels = c("weiblich", "männlich"))), 
                         Relativ = round(prop.table(table(factor(SAFEPD$gender, levels = c(0, 1), labels = c("weiblich", "männlich")))) * 100, 2))
 
 table_nationality <- cbind(Absolut = table(factor(SAFEPD$nationality, levels = c(0, 1, 2), labels = c("deutsch", "andere", "dual"))), 
@@ -73,9 +72,9 @@ describe(SAFEPD$years_since_diagnosis, IQR = TRUE)
 hist_years_since_diagnosis <- hist(SAFEPD$years_since_diagnosis, xlab="Krankheitsdauer", ylab="Häufigkeit", main="Histogramm Krankheitsdauer", col="steelblue", ylim=c(0,80))
 text(hist_years_since_diagnosis$mids, hist_years_since_diagnosis$counts, labels = hist_years_since_diagnosis$counts, adj = c(0.5, -0.5))
 
-Table_SozDem <- CreateCatTable( ##kann man das irgendwie in einem ansehlichen Format ausgeben?
+Table_SozDem <- CreateCatTable( 
   vars = VarDemographic,
-  strata = "gender", ##keine Ahnung wie ich das nach irgendwas sinnvollem / oder gar nichts aufteile, auch für die übrigen Tabellen unten
+  strata = "gender", 
   data = SAFEPD,
   includeNA = TRUE,
   test = FALSE,
@@ -88,7 +87,6 @@ Table_SozDem <- CreateCatTable( ##kann man das irgendwie in einem ansehlichen Fo
 )
 
 ## deskriptive Statistik SAFEPDQA
-
 Table_SAFEPDQA <- CreateCatTable(
   vars = VarSAFEPDQA,
   strata = "gender", 
@@ -104,7 +102,6 @@ Table_SAFEPDQA <- CreateCatTable(
 )
 
 ## deskriptive Statistik UPDRS
-
 CreateCatTable(
   vars = VarUPDRS,
   strata = "gender",
@@ -134,7 +131,6 @@ CreateCatTable(
 ) ## Fehler unused argument (alist())
 
 ## Test auf Normalverteilung 
-
 shapiro.test(SAFEPD$age)
 qqnorm(SAFEPD$age)
 qqline(SAFEPD$age)
@@ -168,7 +164,6 @@ shapiro.test(SAFEPD$participation_in_road_traffic)
 shapiro.test(SAFEPD$overall_situation)
 
 ## SAFEPDQA umkodieren / dichotomisieren, Test
-
 SAFEPD$lack_of_information_dich <- cut(SAFEPD$lack_of_information, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
 SAFEPD$uncertain_future_dich <- cut(SAFEPD$uncertain_future, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
 SAFEPD$chaging_symptom_severity_dich <- cut(SAFEPD$chaging_symptom_severity, breaks=c(3, Inf), right = TRUE, labels=c("x", "y"))
