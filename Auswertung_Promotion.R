@@ -114,8 +114,8 @@ CreateCatTable(
   testExact = fisher.test,
   argsExact = list(workspace = 2 * 10^5),
   smd = FALSE,
-  addOverall = TRUE,
-) ##Fehler unused argument (alist())
+  addOverall = TRUE
+)
 
 CreateCatTable( 
   vars = VarUPDRS_Score,
@@ -128,8 +128,8 @@ CreateCatTable(
   testExact = fisher.test,
   argsExact = list(workspace = 2 * 10^5),
   smd = FALSE,
-  addOverall = TRUE,
-) ## Fehler unused argument (alist())
+  addOverall = TRUE
+) 
 
 ## Test auf Normalverteilung 
 shapiro_tests <- lapply(VarNVTest, function(variable) {
