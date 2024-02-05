@@ -43,11 +43,9 @@ VarUPDRS <- c("UPDRS_1_7",	"UPDRS_1_8",	"UPDRS_1_9",	"UPDRS_1_10",	"UPDRS_1_11",
 VarUPDRS_Score <- c("UPDRS_I_Score", "UPDRS_II_Score")
 VarArztbesuche <- c("FIMA_1_Hausarzt", "FIMA_1_Neurologe", "FIMA_1_Psychiater", "FIMA_1_Internist_FA", "FIMA_1_Gynaekologe", "FIMA_1_Urologe", "FIMA_1_Orthopaede", "FIMA_1_Notfall_KH", "FIMA_1_other")
 VarTherapie <- c("FIMA_2_Krankengymnastik", "FIMA_2_Ergotherapie", "FIMA_2_Sprachtherapie", "FIMA_2_Heilpraktiker", "FIMA_2_Osteopath", "FIMA_2_Chiropraktiker", "FIMA_2_Psychotherapeut")
-
 VarNVTest <- c("age","gender", "nationality", "martial_status", "years_since_diagnosis", "persons_houshold", "school_graduation", "professional_graduation", "employment_status", "lack_of_information", "uncertain_future",	"chaging_symptom_severity",	"gait_insecurity_fall",	"pain",	"gastrointestinal_symptoms",	"urinary_symptoms",	"mental_abilities",	"mental_symptoms",	"other_disease",	"nursing_care",	"side_effects_complications",	"access_healthcare",	"communication_with_me",	"communication_between_professionals",	"loneliness",	"everyday_problems",	"daily_routine",	"overload_among_people",	"pejorativ_looks_comments",	"family_role",	"conflicts_with_relatives",	"victim_to_crime",	"financial_worries",	"not_at_peace_with_myself",	"participation_in_road_traffic",	"overall_situation")
 
 ## deskriptive Statistik demographische Variablen
-  
 table_gender <- cbind(Absolut = table(factor(SAFEPD$gender, levels = c(0, 1), labels = c("weiblich", "männlich"))), 
                         Relativ = round(prop.table(table(factor(SAFEPD$gender, levels = c(0, 1), labels = c("weiblich", "männlich")))) * 100, 2))
 
@@ -91,7 +89,6 @@ Table_SozDem <- CreateCatTable( ##kann man das irgendwie in einem ansehlichen Fo
 )
 
 ## deskriptive Statistik SAFEPDQA
-
 Table_SAFEPDQA <- CreateCatTable(
   vars = VarSAFEPDQA,
   strata = "gender", 
