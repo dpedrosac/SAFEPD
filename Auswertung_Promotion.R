@@ -103,6 +103,14 @@ Table_SAFEPDQA <- CreateCatTable(
 )
 
 ## deskriptive Statistik UPDRS
+describe(SAFEPD$UPDRS_I_Score, IQR = TRUE)
+hist_UPDRS_I <- hist(SAFEPD$UPDRS_I_Score, xlab="UPDRS Score", ylab="Häufigkeit", main="Histogramm UPDRS I", col="steelblue", ylim=c(0,80), breaks=4)
+text(hist_UPDRS_I$mids, hist_UPDRS_I$counts, labels = hist_UPDRS_I$counts, adj=c(0.5, -0.5))
+
+describe(SAFEPD$UPDRS_II_Score, IQR = TRUE)
+hist_UPDRS_II <- hist(SAFEPD$UPDRS_II_Score, xlab="UPDRS Score", ylab="Häufigkeit", main="Histogramm UPDRS II", col="steelblue", ylim=c(0,100), xlim=c(0,50), breaks=4)
+text(hist_UPDRS_II$mids, hist_UPDRS_II$counts, labels = hist_UPDRS_II$counts, adj=c(0.5, -0.5))
+
 CreateCatTable(
   vars = VarUPDRS,
   strata = "gender",
