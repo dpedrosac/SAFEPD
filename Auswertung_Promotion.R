@@ -142,10 +142,14 @@ shapiro_results_table <- do.call(rbind, shapiro_tests)
 qqnorm(SAFEPD$age)
 qqline(SAFEPD$age)
 
-## SAFEPDQA umkodieren / dichotomisieren, Test
-SAFEPD_new <- SAFEPD
-SAFEPD_new[, VarSAFEPDQA] <- lapply(SAFEPD[, VarSAFEPDQA], function(x) ifelse(x %in% 1:3, "eher zutreffend", "eher nicht zutreffend"))
+## SAFEPDQA dichotomisieren
+SAFEPD[paste0(VarSAFEPDQA, "_Group")] <- lapply(SAFEPD[, VarSAFEPDQA], function(x) ifelse(x %in% 1:3, "eher zutreffend", "eher nicht zutreffend"))
 
+## Soziodemographische Daten dichotomisieren
+SAFEPD$martial_status_Group <- ifelse(SAFEPD$martial_status == 1, "verheiratet", "nicht verheiratet")
+SAFEPD$school_graduation_Group <- ifelse(SAFEPD$school_graduation == 3, "Abitur", "kein Abitur")
+SAFEPD$professional_graduation_Group <- ifelse(SAFEPD$professional_graduation == 4, "Hochschulabschlss", "kein Hochschulabschluss")
+SAFEPD$employment_status_Group <- ifelse(SAFEPD$employment_status %in% c(0, 1), "arbeitend", "nicht arbeitend")
 
 
 
