@@ -18,10 +18,13 @@ source("SAFEPD_descr.R")
 source("SAFEPD_descr_diag.R")
 
 ## Korrelationsanalyse
-source("SAFEPD_corr.R")
+# source("SAFEPD_corr.R")
 
 ## Regressionsanalyse
 source("SAFEPD_reg.R")
 
+## Hypothesen Untersuchung
+# source("SAFEPD_hypothesis.R")
+
 ## Datenabgleich / Diskussion
-source("SAFEPD_disc.R")
+# source("SAFEPD_disc.R")
