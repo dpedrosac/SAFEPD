@@ -1,11 +1,12 @@
-perform_regression_analysis <- function(data, formula, covariates, reference_group = NULL, dichotomous_household = TRUE) {
+perform_regression_analysis <- function(data, formula, covariates, reference_group = NULL, dichotomous_household = TRUE, export_path = "regression_analysis_results.xlsx") {
   # Modell erstellen
   modell <- glm(formula, data = data, family = binomial())
-  summary(modell)
-  print(modell)
+  
+  # Modellzusammenfassung
+  model_summary <- summary(modell)
   
   # Berechnung der Modellkoeffizienten und des Konfidenzintervalls
-  p_values <- summary(modell)$coefficients[, "Pr(>|z|)"]
+  p_values <- model_summary$coefficients[, "Pr(>|z|)"]
   exp_coef <- exp(coef(modell))
   conf_int <- exp(confint(modell))
   results <- round(data.frame(OR = exp_coef, ci.lb = conf_int[, 1], ci.ub = conf_int[, 2], pval = p_values), 3)
@@ -17,6 +18,8 @@ perform_regression_analysis <- function(data, formula, covariates, reference_gro
   predicted_probabilities <- predict(modell, type = "response")[observed_indices]
   roc_curve <- roc(response = observed_outcome, predictor = predicted_probabilities)
   auc_val <- auc(roc_curve)
+  
+  # Plot ROC-Kurve
   plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
   legend("bottomright", legend = paste("AUC =", round(auc_val, 3)), col = "blue", lty = 1, cex = 0.8)
   
@@ -38,7 +41,7 @@ perform_regression_analysis <- function(data, formula, covariates, reference_gro
   # Ergebnisse in einer Liste zurückgeben
   result_list <- list(
     modell = modell,
-    model_summary = summary(modell),
+    model_summary = model_summary,
     model_summary_table = results,
     significant_results_table = round(results_sig, 3),
     roc_auc = round(auc_val, 3),
@@ -60,8 +63,28 @@ perform_regression_analysis <- function(data, formula, covariates, reference_gro
     vif_values_df = data.frame(vif_values = round(vif_values, 3))
   )
   
+  # Exportiere die Ergebnisse in eine Excel-Datei
+  write_xlsx(
+    list(
+      "Model Summary" = cbind(Variable = rownames(model_summary$coefficients), as.data.frame(model_summary$coefficients)),  # Modellzusammenfassung
+      "Results" = cbind(Variable = rownames(result_list$model_summary_df), result_list$model_summary_df),                   # Ergebnisse der Modellkoeffizienten
+      "Significant Results" = cbind(Variable = rownames(result_list$significant_results_df), result_list$significant_results_df),  # Signifikante Ergebnisse
+      "VIF Values" = cbind(Variable = names(vif_values), result_list$vif_values_df),                              # VIF Werte
+      "ROC AUC" = result_list$roc_auc_df,                                                            # ROC AUC
+      "Deviance" = data.frame(Deviance = result_list$deviance),                                 # Deviance
+      "Residual DF" = data.frame(DF_Residual = result_list$df_residual),                         # Residual Degrees of Freedom
+      "Omnibus Test" = data.frame(Chi_Square = result_list$omnibus_test$chi_square, 
+                                  DF = result_list$omnibus_test$df, 
+                                  P_Value = result_list$omnibus_test$p_value),                  # Omnibus-Test
+      "Goodness of Fit" = data.frame(R2cs = result_list$goodness_of_fit$R2cs, 
+                                     R2n = result_list$goodness_of_fit$R2n)                  # Güte der Anpassung
+    ),
+    path = export_path  # Ziel-Dateiname
+  )
+  
   return(result_list)
 }
+
 
 # Hypothese: größeres Sicherheitsgefühl bei Männern in Population mit fortgeschrittenem Krebs / Parkinson (Milberg et al. / Akiyama et al. / Pedrosa et al.)
 # Hypothese: negative Assoziation von Sicherheit & starker Symptomausprägung (Milberg et al. / Pedrosa et al.)
@@ -80,8 +103,11 @@ analysis_result <- perform_regression_analysis(
     UPDRS_I_Score +
     UPDRS_II_Score +
     FIMA_1_Hausarzt +
-    FIMA_1_Neurologe
+    FIMA_1_Neurologe,
+  covariates = NULL,  
+  export_path = "regression_analysis_results.xlsx"  
 )
+
 
 # Alternatives Modell
 alternative_analysis <- perform_regression_analysis(
@@ -99,18 +125,12 @@ alternative_analysis <- perform_regression_analysis(
     UPDRS_I_Score +
     UPDRS_II_Score + 
     FIMA_1_Hausarzt + 
-    FIMA_1_Neurologe  
+    FIMA_1_Neurologe,
+  covariates = NULL,  
+  export_path = "alternative_regression_analysis_results.xlsx"  
 )
 
-#write.xlsx(list(Model_Summary = model_summary_df, 
-                #Significant_Results = significant_results_df,
-                #ROC_AUC = roc_auc_df,
-                #VIF_Values = vif_values_df, 
-                #R = r_squared_df, 
-                #adjR = adjusted_r_squared_df),
-           #rowNames = TRUE, 
-           #colNames = TRUE,
-           #file = "analysis_results.xlsx")
+
 
 # Berechnung der Likelihood-Ratio-Statistik zwischen dem Modell und dem Nullmodell
 calculate_lrt <- function(modell) {
@@ -159,5 +179,7 @@ compare_models <- function(model1, model2) {
 
 # Anwendung 
 comparison_result <- compare_models(analysis_result$modell, alternative_analysis$modell)
+
+
 
 
