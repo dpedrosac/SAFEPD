@@ -1,65 +1,3 @@
-# Vorwärtsselektion: welche Variablen zeigen eine Korrelation zur Gesamtsituation (p < 0,2)
-# Liste der Variablen, die mit overall_situation_Group getestet werden sollen
-alle_variablen <- c("age", "years_since_diagnosis", "gender_Group", "nationality_Group", 
-               "martial_status_Group", "school_graduation_Group", "persons_houshold_Group", 
-               "professional_graduation_Group", "employment_status_Group", 
-               "UPDRS_I_Score", "UPDRS_II_Score", "FIMA_1_Hausarzt", "FIMA_1_Neurologe", 
-               "FIMA_2_Krankengymnastik", "FIMA_2_Ergotherapie", "FIMA_2_Sprachtherapie", 
-               "FIMA_3", "FIMA_4", "FIMA_5", "FIMA_6", "FIMA_7", "FIMA_8", "FIMA_9", 
-               "FIMA_10", "FIMA_11", "FIMA_12", "FIMA_13_Anzahl")
-
-# Leere Liste zum Speichern der Ergebnisse
-results <- data.frame(Variable = character(), Correlation = numeric(), P_Value = numeric(), stringsAsFactors = FALSE)
-
-# Schleife über alle Variablen
-for (var in alle_variablen) {
-
-  test_result <- cor.test(SAFEPD$overall_situation_Group, SAFEPD[[var]])
-  
-  alle_results <- rbind(alle_results, data.frame(
-    Variable = var, 
-    Correlation = test_result$estimate, 
-    P_Value = test_result$p.value
-  ))
-}
-
-cortest_significant_results <- subset(alle_results, P_Value < 0.25)
-
-# Rückwärtsselektion: gesättigtes Modell - Welche Variablen sollen in die Regression miteingehen?
-full_model <- glm(SAFEPD$overall_situation_Group ~ 
-                    age + 
-                    #years_since_diagnosis + 
-                    gender_Group + 
-                    #nationality_Group + 
-                    martial_status_Group + 
-                    #school_graduation_Group + 
-                    persons_houshold_Group + 
-                    #professional_graduation_Group + 
-                    employment_status_Group + 
-                    UPDRS_I_Score +
-                    UPDRS_II_Score +
-                    FIMA_1_Hausarzt + 
-                    FIMA_1_Neurologe + 
-                    #FIMA_2_Krankengymnastik + 
-                    FIMA_2_Ergotherapie + 
-                    #FIMA_2_Sprachtherapie +
-                    FIMA_3 + 
-                    FIMA_4 + 
-                    FIMA_5 +
-                    #FIMA_6 +
-                    FIMA_7 +
-                    FIMA_8 +
-                    #FIMA_9 + 
-                    #FIMA_10 + 
-                    #FIMA_11 + 
-                    #FIMA_12 + 
-                    FIMA_13_Anzahl,
-                  data = SAFEPD, family = binomial, na.action = na.exclude)
-
-# Durchführung der Rückwärtsselektion basierend auf AIC
-final_model <- step(full_model, direction = "backward")
-
-
 # Funktion für Vollständige Analyse aus Regression und Gütmaßen
 perform_regression_analysis <- function(data, formula, covariates, reference_group = NULL, dichotomous_household = TRUE, export_path = "regression_analysis_results.xlsx") {
   # Modell erstellen
@@ -129,18 +67,18 @@ perform_regression_analysis <- function(data, formula, covariates, reference_gro
   # Exportiere die Ergebnisse in eine Excel-Datei
   write_xlsx(
     list(
-      "Model Summary" = cbind(Variable = rownames(model_summary$coefficients), as.data.frame(model_summary$coefficients)),  # Modellzusammenfassung
-      "Results" = cbind(Variable = rownames(result_list$model_summary_df), result_list$model_summary_df),                   # Ergebnisse der Modellkoeffizienten
-      "Significant Results" = cbind(Variable = rownames(result_list$significant_results_df), result_list$significant_results_df),  # Signifikante Ergebnisse
-      "VIF Values" = cbind(Variable = names(vif_values), result_list$vif_values_df),                              # VIF Werte
-      "ROC AUC" = result_list$roc_auc_df,                                                            # ROC AUC
-      "Deviance" = data.frame(Deviance = result_list$deviance),                                 # Deviance
-      "Residual DF" = data.frame(DF_Residual = result_list$df_residual),                         # Residual Degrees of Freedom
+      "Model Summary" = cbind(Variable = rownames(model_summary$coefficients), as.data.frame(model_summary$coefficients)),  
+      "Results" = cbind(Variable = rownames(result_list$model_summary_df), result_list$model_summary_df),                   
+      "Significant Results" = cbind(Variable = rownames(result_list$significant_results_df), result_list$significant_results_df),  
+      "VIF Values" = cbind(Variable = names(vif_values), result_list$vif_values_df),                              
+      "ROC AUC" = result_list$roc_auc_df,                                                         
+      "Deviance" = data.frame(Deviance = result_list$deviance),                            
+      "Residual DF" = data.frame(DF_Residual = result_list$df_residual),                       
       "Omnibus Test" = data.frame(Chi_Square = result_list$omnibus_test$chi_square, 
                                   DF = result_list$omnibus_test$df, 
-                                  P_Value = result_list$omnibus_test$p_value),                  # Omnibus-Test
+                                  P_Value = result_list$omnibus_test$p_value),                  
       "Goodness of Fit" = data.frame(R2cs = result_list$goodness_of_fit$R2cs, 
-                                     R2n = result_list$goodness_of_fit$R2n)                  # Güte der Anpassung
+                                     R2n = result_list$goodness_of_fit$R2n)                 
     ),
     path = export_path  # Ziel-Dateiname
   )
@@ -148,9 +86,64 @@ perform_regression_analysis <- function(data, formula, covariates, reference_gro
   return(result_list)
 }
 
+alle_variablen <- c("age", "years_since_diagnosis", "gender_Group", "nationality_Group", 
+                    "martial_status_Group", "school_graduation_Group", "persons_houshold_Group", 
+                    "professional_graduation_Group", "employment_status_Group", 
+                    "UPDRS_I_Score", "UPDRS_II_Score", "FIMA_1_Hausarzt", "FIMA_1_Neurologe", 
+                    "FIMA_2_Krankengymnastik", "FIMA_2_Ergotherapie", "FIMA_2_Sprachtherapie", 
+                    "FIMA_3", "FIMA_4", "FIMA_5", "FIMA_6", "FIMA_7", "FIMA_8", "FIMA_9", 
+                    "FIMA_10", "FIMA_11", "FIMA_12", "FIMA_13_Anzahl")
 
-# Hypothese: größeres Sicherheitsgefühl bei Männern in Population mit fortgeschrittenem Krebs / Parkinson (Milberg et al. / Akiyama et al. / Pedrosa et al.)
-# Hypothese: negative Assoziation von Sicherheit & starker Symptomausprägung (Milberg et al. / Pedrosa et al.)
+# Vorwärtsselektion: welche Variablen zeigen eine Korrelation zur Gesamtsituation (p < 0,2)
+results <- data.frame(Variable = character(), Correlation = numeric(), P_Value = numeric(), stringsAsFactors = FALSE)
+for (var in alle_variablen) {
+
+  test_result <- cor.test(SAFEPD$overall_situation_Group, SAFEPD[[var]])
+  
+  alle_results <- rbind(alle_results, data.frame(
+    Variable = var, 
+    Correlation = test_result$estimate, 
+    P_Value = test_result$p.value
+  ))
+}
+cortest_significant_results <- subset(alle_results, P_Value < 0.25)
+
+# Rückwärtsselektion: gesättigtes Modell - Welche Variablen sollen in die Regression miteingehen?
+full_model <- glm(SAFEPD$overall_situation_Group ~ 
+                    age + 
+                    #years_since_diagnosis + 
+                    gender_Group + 
+                    #nationality_Group + 
+                    martial_status_Group + 
+                    #school_graduation_Group + 
+                    persons_houshold_Group + 
+                    #professional_graduation_Group + 
+                    employment_status_Group + 
+                    UPDRS_I_Score +
+                    UPDRS_II_Score +
+                    FIMA_1_Hausarzt + 
+                    FIMA_1_Neurologe + 
+                    #FIMA_2_Krankengymnastik + 
+                    FIMA_2_Ergotherapie + 
+                    #FIMA_2_Sprachtherapie +
+                    FIMA_3 + 
+                    FIMA_4 + 
+                    FIMA_5 +
+                    #FIMA_6 +
+                    FIMA_7 +
+                    FIMA_8 +
+                    #FIMA_9 + 
+                    #FIMA_10 + 
+                    #FIMA_11 + 
+                    #FIMA_12 + 
+                    FIMA_13_Anzahl,
+                  data = SAFEPD, family = binomial, na.action = na.exclude)
+final_model <- step(full_model, direction = "backward")
+
+
+## Hypothese: größeres Sicherheitsgefühl bei Männern in Population mit fortgeschrittenem Krebs / Parkinson (Milberg et al. / Akiyama et al. / Pedrosa et al.)
+## Hypothese: negative Assoziation von Sicherheit & starker Symptomausprägung (Milberg et al. / Pedrosa et al.)
+
 # Durchführung der Analyse mit Variablen NUR aus der Rückwärtsselektion ALLER Variablen 
 analysis_result <- perform_regression_analysis(
   data = SAFEPD,
@@ -172,11 +165,11 @@ analysis_result <- perform_regression_analysis(
     FIMA_2_Sprachtherapie +
     FIMA_3 +
     FIMA_13_Anzahl,
-  #covariates = NULL,  
-  #export_path = "regression_analysis_results.xlsx"  
+  covariates = NULL,  
+  export_path = "regression_analysis_results.xlsx"  
 )
 
-# Durchführung der Analyse nach Vorwärts- und Rückwärtsselektion + selektive Anpassung (beste Datenerklärung nach R2N und AUC)
+# Durchführung der Analyse nach Vorwärts- und Rückwärtsselektion (FIMA nicht komplett) + manuelle Anpassung (Alter und Krankheitsdauer hinzugefügt)
 analysis_result_alt <- perform_regression_analysis(
   data = SAFEPD,
   formula = overall_situation_Group ~ 
@@ -197,11 +190,11 @@ analysis_result_alt <- perform_regression_analysis(
     FIMA_2_Sprachtherapie +
     FIMA_3 +
     FIMA_13_Anzahl,
-  #covariates = NULL,  
-  #export_path = "regression_analysis_results.xlsx"  
+  covariates = NULL,  
+  export_path = "regression_analysis_results_alt.xlsx"  
 )
 
-# Durchführung der Analyse nach Vorwärts- und Rückwärtsselektion + selektive Anpassung (beste Datenerklärung nach R2N und AUC)
+# Durchführung der Analyse nach Vorwärts- und Rückwärtsselektion (ALLE Variablen) + manuelle Anpassung (Alter und Krankheitsdauer)
 analysis_result_alt2 <- perform_regression_analysis(
   data = SAFEPD,
   formula = overall_situation_Group ~ 
@@ -215,73 +208,89 @@ analysis_result_alt2 <- perform_regression_analysis(
     professional_graduation_Group +
     employment_status_Group +
     UPDRS_I_Score +
-    UPDRS_II_Score +
+    UPDRS_II_Score + 
     FIMA_1_Hausarzt +
     FIMA_1_Neurologe + 
     #FIMA_2_Ergotherapie +
     #FIMA_2_Sprachtherapie +
-    FIMA_3 +
+    FIMA_3 + #nur 33 Personen, die einen ambulanten Pfelegediesnt hatten
     #FIMA_4 + 
     #FIMA_5 + 
-    FIMA_6 +
+    FIMA_6 + #nur 11 Personen, die in Tagespflege waren
     #FIMA_7 +
     #FIMA_8 +
+    #FIMA_11 + 
     FIMA_13_Anzahl,
   #covariates = NULL,  
-  #export_path = "regression_analysis_results.xlsx"  
+  #export_path = "regression_analysis_results_alt2.xlsx"  
 )
 
-# Berechnung der Likelihood-Ratio-Statistik zwischen dem Modell und dem Nullmodell
-calculate_lrt <- function(modell) {
-  deviance_model <- modell$deviance
-  deviance_null <- modell$null.deviance
-  
-  LRT <- deviance_null - deviance_model
-  
-  df_LRT <- modell$df.null - modell$df.residual
-  
-  p_value <- pchisq(LRT, df_LRT, lower.tail = FALSE)
-  
-  result <- list(
-    LRT = LRT,
-    df = df_LRT,
-    p_value = p_value
-  )
-  
-  return(result)
-}
+# automatische Schrittweise Selektion und Analyse nach Funktion 
+full_model_logit <- glm(overall_situation_Group ~ ., data = SAFEPD[, c("overall_situation_Group", alle_variablen)], family = binomial)
+step_model_logit <- step(full_model_logit, direction = "both")
 
-# Anwendung auf das Modell
-lrt_result1 <- calculate_lrt(analysis_result$modell)
-lrt_result2 <- calculate_lrt(analysis_result_alt$modell)
+analysis_result_alt3 <- perform_regression_analysis(
+  data = SAFEPD,
+  formula = overall_situation_Group ~ 
+    age +
+    #years_since_diagnosis +
+    gender_Group +
+    #nationality_Group +
+    #martial_status_Group +
+    #school_graduation_Group +
+    #persons_houshold_Group +
+    #professional_graduation_Group +
+    #employment_status_Group +
+    UPDRS_I_Score +
+    #UPDRS_II_Score + 
+    FIMA_1_Hausarzt +
+    FIMA_1_Neurologe + 
+    FIMA_2_Ergotherapie +
+    FIMA_2_Sprachtherapie +
+    FIMA_3 + #nur 33 Personen, die einen ambulanten Pfelegediesnt hatten
+    #FIMA_4 + 
+    #FIMA_5 + 
+    FIMA_6 + #nur 11 Personen, die in Tagespflege waren
+    #FIMA_7 +
+    #FIMA_8 +
+    FIMA_11 + 
+    FIMA_13_Anzahl,
+  covariates = NULL,  
+  export_path = "regression_analysis_results_alt3.xlsx"  
+)
 
-# Vergleich zweier Modelle
+# Modellvergleich
 compare_models <- function(model1, model2) {
-  # Berechnung der Differenz der Deviances
-  LRT <- abs(model1$deviance - model2$deviance)  # Verwende den absoluten Unterschied
-  
-  # Berechnung der Differenz der Freiheitsgrade
-  df_LRT <- abs(model1$df.residual - model2$df.residual)  # Verwende den absoluten Unterschied
-  
-  # Berechnung des p-Werts
+  LRT <- abs(model1$deviance - model2$deviance)  
+  df_LRT <- abs(model1$df.residual - model2$df.residual)  
   p_value <- pchisq(LRT, df_LRT, lower.tail = FALSE)
-  
-  # Ergebnisse zurückgeben
   result <- list(
     LRT = LRT,
     df = df_LRT,
     p_value = p_value
   )
-  
   return(result)
 }
 
 # Anwendung 
-comparison_result <- compare_models(analysis_result$modell, analysis_result_alt$modell)
-comparison_result <- compare_models(analysis_result$modell, analysis_result_alt2$modell)
-
+comparison_result <- compare_models(analysis_result$modell, analysis_result_alt$modell) 
 # Keine Signifikant Bessere Erklärung der Daten durch das komplexere Modell analyis_result_alt
-# Signifikant Besser Erklärung der Daten durch das komplexere Modell anylsis_result_alt2!
+
+comparison_result2 <- compare_models(analysis_result$modell, analysis_result_alt2$modell)
+# Signifikant Bessere Erklärung der Daten durch das komplexere Modell anylsis_result_alt2!
+
+comparison_result3 <- compare_models(analysis_result$modell, analysis_result_alt3$modell)
+# Signifikant Bessere Erklärung der Daten durch das komplexere Modell anylsis_result_alt3!
+
+comparison_result4 <- compare_models(analysis_result_alt$modell, analysis_result_alt2$modell)
+# Signifikant Bessere Erklärung der Daten durch das komplexere Modell anylsis_result_alt3!
+
+comparison_result5 <- compare_models(analysis_result_alt2$modell, analysis_result_alt3$modell)
+# Signifikant Bessere Erklärung der Daten durch das Modell analysis_result_alt3!
+
+
+
+
 
 
 
