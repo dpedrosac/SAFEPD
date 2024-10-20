@@ -421,8 +421,7 @@ ggplot(häufigkeitstabelle_overall, aes(x = "Overall Situation", y = Häufigkeit
   geom_text(aes(label = Häufigkeit), vjust = -0.5, position = position_dodge(width = 0.9), size = 3) +
   labs(x = "", y = "frequency", title = "Overall Situation") +
   scale_fill_manual(values = zwei_palette, name = "percieved safety", labels = c("restricted", "unrestricted")) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme_minimal() 
 
 
 
