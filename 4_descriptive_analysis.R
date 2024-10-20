@@ -2,8 +2,6 @@
 describe(SAFEPD$age, IQR = TRUE)
 describe(subset(SAFEPD$age, SAFEPD$gender == 1))
 describe(subset(SAFEPD$age, SAFEPD$gender == 0))
-hist_alter <- hist(SAFEPD$age, xlab="Alter", ylab="Häufigkeit", main="Histogramm Alter", col="steelblue", ylim=c(0,70), xlim=c(30,90), breaks=5) ##x-Grenzen?
-text(hist_alter$mids, hist_alter$counts, labels = hist_alter$counts, adj=c(0.5, -0.5))
 
 describe(SAFEPD$years_since_diagnosis, IQR = TRUE)
 describe(subset(SAFEPD$years_since_diagnosis, SAFEPD$gender == 1))
@@ -43,7 +41,7 @@ Table_SozDem_Group <- CreateCatTable(
   addOverall = TRUE
 )
 
-# SAFEPDQA overall_situation
+# Sicherheitsfragebogen 
 Table_SAFEPDQA1 <- CreateCatTable(
   vars = "overall_situation_Group",
   strata = "gender", 
@@ -62,14 +60,10 @@ Table_SAFEPDQA1 <- CreateCatTable(
 describe(SAFEPD$UPDRS_I_Score, IQR = TRUE)
 describe(subset(SAFEPD$UPDRS_I_Score, SAFEPD$gender == 1))
 describe(subset(SAFEPD$UPDRS_I_Score, SAFEPD$gender == 0))
-hist_UPDRS_I <- hist(SAFEPD$UPDRS_I_Score, xlab="UPDRS Score", ylab="Häufigkeit", main="Histogramm UPDRS I", col="steelblue", ylim=c(0,80), breaks=4)
-text(hist_UPDRS_I$mids, hist_UPDRS_I$counts, labels = hist_UPDRS_I$counts, adj=c(0.5, -0.5))
 
 describe(SAFEPD$UPDRS_II_Score, IQR = TRUE)
 describe(subset(SAFEPD$UPDRS_II_Score, SAFEPD$gender == 1))
 describe(subset(SAFEPD$UPDRS_II_Score, SAFEPD$gender == 0))
-hist_UPDRS_II <- hist(SAFEPD$UPDRS_II_Score, xlab="UPDRS Score", ylab="Häufigkeit", main="Histogramm UPDRS II", col="steelblue", ylim=c(0,100), xlim=c(0,50), breaks=4)
-text(hist_UPDRS_II$mids, hist_UPDRS_II$counts, labels = hist_UPDRS_II$counts, adj=c(0.5, -0.5))
 
 VarUPDRS <- c("UPDRS_1_7",	"UPDRS_1_8",	"UPDRS_1_9",	"UPDRS_1_10",	"UPDRS_1_11",	"UPDRS_1_12",	"UPDRS_1_13", "UPDRS_2_1", "UPDRS_2_2",	"UPDRS_2_3",	"UPDRS_2_4",	"UPDRS_2_5",	"UPDRS_2_6",	"UPDRS_2_7",	"UPDRS_2_8",	"UPDRS_2_9",	"UPDRS_2_10",	"UPDRS_2_11",	"UPDRS_2_12",	"UPDRS_2_13")
 Table_UPDRS_All <- CreateCatTable(
@@ -115,66 +109,102 @@ Table_UPDRS_II <- CreateCatTable(
 ) 
 
 # FIMA
-# create_visit_histogram <- function(data, column, title) {
-#  describe_result <- describe(data[[column]], IQR = TRUE)
-#  hist_result <- hist(data[[column]], xlab = "Anzahl der Besuche", 
-#  ylab = "Häufigkeit", main = title, col = "steelblue", ylim = c(0, 200))
-#  text(hist_result$mids, hist_result$counts, labels = hist_result$counts, adj = c(0.5, -0.5))
-#  visits_table <- table(data[[column]])
-#  return(list(describe_result = describe_result, hist_result = hist_result, visits_table = visits_table))
-# }
+describe(SAFEPD$FIMA_1_Hausarzt, IQR = TRUE)
+describe(SAFEPD$FIMA_1_Neurologe, IQR = TRUE)
+describe(SAFEPD$FIMA_1_Psychiater, IQR = TRUE)
+describe(SAFEPD$FIMA_1_Internist_FA, IQR = TRUE)
+describe(subset(SAFEPD$FIMA_1_Gynaekologe, SAFEPD$gender == 0), IQR = TRUE)
+describe(subset(SAFEPD$FIMA_1_Urologe, SAFEPD$gender == 1),IQR = TRUE)
+describe(SAFEPD$FIMA_1_Orthopaede, IQR = TRUE)
+describe(SAFEPD$FIMA_1_Notfall_KH, IQR = TRUE)
+describe(SAFEPD$FIMA_1_other, IQR = TRUE)
+describe(SAFEPD$FIMA_1_Gesamt, IQR = TRUE)
 
-# visit_histograms <- list(
-#  Hausarzt = create_visit_histogram(SAFEPD, "FIMA_1_Hausarzt", "Besuche beim Hausarzt"),
-#  Neurologe = create_visit_histogram(SAFEPD, "FIMA_1_Neurologe", "Besuche beim Neurologen"),
-# Psychiater = create_visit_histogram(SAFEPD, "FIMA_1_Psychiater", "Besuche beim Psychiater"),
-#  Internist_FA = create_visit_histogram(SAFEPD, "FIMA_1_Internist_FA", "Besuche beim Internisten"),
-#  Gynaekologe = create_visit_histogram(subset(SAFEPD, gender == 0), "FIMA_1_Gynaekologe", "Besuche beim Gynäkologen"),
-#  Urologe = create_visit_histogram(subset(SAFEPD, gender == 1), "FIMA_1_Urologe", "Besuche beim Urologen"),
-#  Orthopaede = create_visit_histogram(SAFEPD, "FIMA_1_Orthopaede", "Besuche beim Orthopäden"),
-#  Notfall_KH = create_visit_histogram(SAFEPD, "FIMA_1_Notfall_KH", "Besuche in der Notaufnahme"),
-#  other = create_visit_histogram(SAFEPD, "FIMA_1_other", "Sonstige Arztkonsultationen"),
-#  Gesamt = create_visit_histogram(SAFEPD, "FIMA_1_Gesamt", "Gesamtanzahl der Arztkonsultationen")
-# )
+VarArztbesuche <- c("FIMA_1_Hausarzt", "FIMA_1_Neurologe", "FIMA_1_Psychiater", "FIMA_1_Internist_FA", "FIMA_1_Gynaekologe", "FIMA_1_Urologe", "FIMA_1_Orthopaede", "FIMA_1_Notfall_KH", "FIMA_1_other")
+Table_FIMA1 <- CreateCatTable( 
+  vars = VarArztbesuche,
+  strata = "gender",
+  data = SAFEPD,
+  includeNA = TRUE,
+  test = TRUE,
+  testApprox = chisq.test,
+  argsApprox = list(correct = TRUE),
+  testExact = fisher.test,
+  argsExact = list(workspace = 2 * 10^5),
+  smd = TRUE,
+  addOverall = TRUE
+) 
 
-# describe(SAFEPD$FIMA_1_Hausarzt, IQR = TRUE)
-# describe(SAFEPD$FIMA_1_Neurologe, IQR = TRUE)
-# describe(SAFEPD$FIMA_1_Psychiater, IQR = TRUE)
-# describe(SAFEPD$FIMA_1_Internist_FA, IQR = TRUE)
-# describe(subset(SAFEPD$FIMA_1_Gynaekologe, SAFEPD$gender == 0), IQR = TRUE)
-# describe(subset(SAFEPD$FIMA_1_Urologe, SAFEPD$gender == 1),IQR = TRUE)
-# describe(SAFEPD$FIMA_1_Orthopaede, IQR = TRUE)
-# describe(SAFEPD$FIMA_1_Notfall_KH, IQR = TRUE)
-# describe(SAFEPD$FIMA_1_other, IQR = TRUE)
-# describe(SAFEPD$FIMA_1_Gesamt, IQR = TRUE)
+VarTherapie <- c("FIMA_2_Krankengymnastik", "FIMA_2_Ergotherapie", "FIMA_2_Sprachtherapie", "FIMA_2_Heilpraktiker", "FIMA_2_Osteopath", "FIMA_2_Chiropraktiker", "FIMA_2_Psychotherapeut")
+Table_FIMA2 <- CreateCatTable( 
+  vars = VarTherapie,
+  strata = "gender",
+  data = SAFEPD,
+  includeNA = TRUE,
+  test = TRUE,
+  testApprox = chisq.test,
+  argsApprox = list(correct = TRUE),
+  testExact = fisher.test,
+  argsExact = list(workspace = 2 * 10^5),
+  smd = FALSE,
+  addOverall = TRUE
+) 
 
-# VarArztbesuche <- c("FIMA_1_Hausarzt", "FIMA_1_Neurologe", "FIMA_1_Psychiater", "FIMA_1_Internist_FA", "FIMA_1_Gynaekologe", "FIMA_1_Urologe", "FIMA_1_Orthopaede", "FIMA_1_Notfall_KH", "FIMA_1_other")
-# Table_FIMA1 <- CreateCatTable( 
-#  vars = VarArztbesuche,
-#  strata = "gender",
-#  data = SAFEPD,
-#  includeNA = TRUE,
-#  test = TRUE,
-#  testApprox = chisq.test,
-#  argsApprox = list(correct = TRUE),
-#  testExact = fisher.test,
-#  argsExact = list(workspace = 2 * 10^5),
-#  smd = TRUE,
-#  addOverall = TRUE
-# ) 
-
-# VarTherapie <- c("FIMA_2_Krankengymnastik", "FIMA_2_Ergotherapie", "FIMA_2_Sprachtherapie", "FIMA_2_Heilpraktiker", "FIMA_2_Osteopath", "FIMA_2_Chiropraktiker", "FIMA_2_Psychotherapeut")
-# Table_FIMA2 <- CreateCatTable( 
-#  vars = VarTherapie,
-#  strata = "gender",
-#  data = SAFEPD,
-#  includeNA = TRUE,
-#  test = TRUE,
-#  testApprox = chisq.test,
-#  argsApprox = list(correct = TRUE),
-#  testExact = fisher.test,
-#  argsExact = list(workspace = 2 * 10^5),
-#  smd = FALSE,
-#  addOverall = TRUE
-# ) 
-
+VarPflege <- c("FIMA_3", "FIMA_4", "FIMA_5", "FIMA_6", "FIMA_7", "FIMA_8", "FIMA_8_Group")
+Table_FIMA3 <- CreateCatTable(
+  vars = VarPflege,
+  strata = "gender",
+  data = SAFEPD,
+  includeNA = TRUE,
+  test = TRUE, 
+  testApprox = chisq.test,
+  argsApprox = list(correct = TRUE),
+  testExact = fisher.test,
+  argsExact = list(workspace = 2 * 10^5),
+  smd = FALSE,
+  addOverall = TRUE
+)
+  
+VarKlinik <- c("FIMA_9_Group", "FIMA_10_Group", "FIMA_11_Group", "FIMA_12_Group")
+Table_FIMA4 <- CreateCatTable(
+  vars = VarKlinik,
+  strata = "gender",
+  data = SAFEPD,
+  includeNA = TRUE,
+  test = TRUE, 
+  testApprox = chisq.test,
+  argsApprox = list(correct = TRUE),
+  testExact = fisher.test,
+  argsExact = list(workspace = 2 * 10^5),
+  smd = FALSE,
+  addOverall = TRUE
+)
+  
+VarWohnung <- c("FIMA_15", "FIMA_14_Group")
+Table_FIMA5 <- CreateCatTable(
+  vars = VarWohnung,
+  strata = "gender", 
+  data = SAFEPD,
+  includeNA = TRUE,
+  test = TRUE,
+  testApprox = chisq.test,
+  argsApprox = list(correct = TRUE),
+  testExact = fisher.test,
+  argsExact = list(workspace = 2 * 10^5),
+  smd = FALSE,
+  addOverall = TRUE
+)
+  
+Table_FIMA6 <- CreateCatTable(
+  vars = "FIMA_16_Group",
+  strata = "gender", 
+  data = SAFEPD,
+  includeNA = TRUE,
+  test = TRUE,
+  testApprox = chisq.test,
+  argsApprox = list(correct = TRUE),
+  testExact = fisher.test,
+  argsExact = list(workspace = 2 * 10^5),
+  smd = FALSE,
+  addOverall = TRUE
+)
