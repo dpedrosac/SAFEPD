@@ -9,3 +9,9 @@ shapiro_results_table <- do.call(rbind, shapiro_tests)
 
 qqnorm(SAFEPD$age)
 qqline(SAFEPD$age)
+
+qqnorm(SAFEPD$UPDRS_I_Score)
+qqline(SAFEPD$UPDRS_I_Score)
+
+qqnorm(SAFEPD$UPDRS_II_Score)
+qqline(SAFEPD$UPDRS_II_Score)
