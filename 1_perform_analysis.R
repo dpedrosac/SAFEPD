@@ -15,7 +15,7 @@ source("SAFEPD_dist.R")
 
 ## deskriptive Analyse
 source("SAFEPD_descr.R")
-source("SAFEPD_descr_diag.R")
+source("SAFEPD_descr_diag.R") # muss ich immer manuell ausführen, weiß nicht warum das nicht wie bei den anderen funktioniert
 
 ## Korrelationsanalyse
 # source("SAFEPD_corr.R")
