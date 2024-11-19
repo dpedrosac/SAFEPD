@@ -36,12 +36,7 @@ perform_regression_analysis <- function(data, formula, covariates, reference_gro
   n <- nrow(data)  # Anzahl der Beobachtungen
   R2cs <- 1 - exp((modell$deviance - modell$null.deviance) / n)
   R2n <- R2cs / (1 - exp(-modell$null.deviance / n))
-  
-  # Vergleich Varianzaufklärung zum Nullmodell
-  modelchi <- modell$null.deviance - modell$deviance
-  chidf <- modell$df.null - modell$df.residual
-  chisqp <- 1 - pchisq(modelchi, chidf)
-  
+ 
   # Ergebnisse in einer Liste zurückgeben
   result_list <- list(
     modell = modell,
@@ -52,11 +47,6 @@ perform_regression_analysis <- function(data, formula, covariates, reference_gro
     vif_values = round(vif_values, 3),
     deviance = round(deviance, 3),
     df_residual = round(df_residual, 3),
-    omnibus_test = list(
-      chi_square = round(modelchi, 3),
-      df = chidf,
-      p_value = round(chisqp, 3)
-    ),
     goodness_of_fit = list(
       R2cs = round(R2cs, 3),
       R2n = round(R2n, 3)
@@ -217,7 +207,7 @@ for_back_analysis_result <- perform_regression_analysis(
   export_path = "regression_analysis_results.xlsx"  
 )
 
-# automatische Schrittweise Selektion und Analyse nach Funktion 
+# Modell 4: automatische Schrittweise Selektion 
 aut_full_model <- glm(overall_situation_Group ~ ., data = SAFEPD[, c("overall_situation_Group", alle_variablen)], family = binomial)
 aut_step_model <- step(aut_full_model, direction = "both")
 aut_analysis_result <- perform_regression_analysis(
@@ -268,6 +258,16 @@ comparison_result4 <- compare_models(analysis_result$modell, aut_analysis_result
 
 comparison_result5 <- compare_models(forward_analysis_result$modell, aut_analysis_result$modell)
 # Keine Signifikant Bessere Erklärung der Daten --> automatische schrittweise Selektion "besser", da einfacher
+
+
+
+
+
+
+
+
+
+
 
 
 
