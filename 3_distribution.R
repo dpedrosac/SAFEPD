@@ -7,11 +7,11 @@ shapiro_tests <- lapply(VarNVTest, function(variable) {
                     is_normal = shapiro_test_result$p.value > 0.05))})
 shapiro_results_table <- do.call(rbind, shapiro_tests)
 
-qqnorm(SAFEPD$age)
+qqnorm(SAFEPD$age, main = "Q-Q-Plot Alter")
 qqline(SAFEPD$age)
 
-qqnorm(SAFEPD$UPDRS_I_Score)
+qqnorm(SAFEPD$UPDRS_I_Score, main = "Q-Q-Plot UPDRS 1")
 qqline(SAFEPD$UPDRS_I_Score)
 
-qqnorm(SAFEPD$UPDRS_II_Score)
+qqnorm(SAFEPD$UPDRS_II_Score, main = "Q-Q-Plot UPDRS 2")
 qqline(SAFEPD$UPDRS_II_Score)
