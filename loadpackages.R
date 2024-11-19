@@ -1,35 +1,23 @@
-install.packages("readxl")
-install.packages("psych")
-install.packages("tableone")
-install.packages("compareGroups")
-install.packages("lsr")
-install.packages("descr")
-install.packages("ordinal")
-install.packages("MASS")
-install.packages("pROC")
-install.packages("lmtest")
-install.packages("corrplot")
-install.packages("car")
-install.packages("openxlsx")
-install.packages("deplyr")
-install.packages("mice")
-install.packages("ggplot2")
-install.packages("tidyr")
+packages <- c("mice", 
+"psych",
+"tableone",
+"ggplot2", 
+"readxl",
+"pROC",
+"car", 
+"openxlsx",
+"dplyr",
+"broom",
+"tidyr")
 
-library(tidyr)
-library(readxl)
-library(psych)
-library(tableone)
-library(compareGroups)
-library(lsr)
-library(descr)
-library(ordinal)
-library(MASS)
-library(pROC)
-library(lmtest)
-library(corrplot)
-library(car)
-library(openxlsx)
-library(dplyr)
-library(mice)
-library(ggplot2)
+## Now load or install & load all if necessary
+package.check <- lapply(
+  packages,
+  FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  }
+)
+
