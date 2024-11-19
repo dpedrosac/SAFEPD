@@ -6,8 +6,6 @@ describe(subset(SAFEPD$age, SAFEPD$gender == 0))
 describe(SAFEPD$years_since_diagnosis, IQR = TRUE)
 describe(subset(SAFEPD$years_since_diagnosis, SAFEPD$gender == 1))
 describe(subset(SAFEPD$years_since_diagnosis, SAFEPD$gender == 0))
-hist_years_since_diagnosis <- hist(SAFEPD$years_since_diagnosis, xlab="Krankheitsdauer", ylab="Häufigkeit", main="Histogramm Krankheitsdauer", col="steelblue", ylim=c(0,80))
-text(hist_years_since_diagnosis$mids, hist_years_since_diagnosis$counts, labels = hist_years_since_diagnosis$counts, adj = c(0.5, -0.5))
 
 VarDemographic <- c("age", "gender", "nationality", "martial_status", "years_since_diagnosis", "persons_houshold", "school_graduation", "professional_graduation", "employment_status")
 
