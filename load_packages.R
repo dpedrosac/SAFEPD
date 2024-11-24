@@ -21,7 +21,8 @@ packages <- c(
   "openxlsx",
   "gplots",
   "openxlsx",
-  "ggplot2"
+  "ggplot2",
+  "writexl"
 )
 
 ## Now load or install & load all if necessary
