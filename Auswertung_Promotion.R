@@ -1,4 +1,4 @@
-Run analyses for a corss-sectional study on perceived safety of people with Parkinson's Disease (PwPD): 
+# Run analyses for a corss-sectional study on perceived safety of people with Parkinson's Disease (PwPD): 
 # Code developed by Florian Kuschel and David Pedrosa
 
 # Version 2.1 # 2024-14-11, # Smaller adjustments to make the code readble for different collaborators
