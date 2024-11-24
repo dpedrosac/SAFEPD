@@ -6,21 +6,15 @@ if (!dir.exists("results")) {
 ## Hypothese: negative Assoziation von Sicherheit & starker Symptomausprägung (Milberg et al. / Pedrosa et al.)
 
 # Funktion für Vollständige Analyse aus Regression und Gütmaßen
-perform_regression_analysis <- function(data, formula, covariates, reference_group = NULL, dichotomous_household = TRUE, export_path = "regression_analysis_results.xlsx") {
-  # Modell erstellen
+perform_regression_analysis <- function(data, formula, covariates, reference_group = NULL, dichotomous_household = TRUE, export_path = "regression_analysis_results.xlsx") 
+  {
   modell <- glm(formula, data = data, family = binomial())
-  
-  # Modellzusammenfassung
   model_summary <- summary(modell)
-  
-  # Berechnung der Modellkoeffizienten und des Konfidenzintervalls
   p_values <- model_summary$coefficients[, "Pr(>|z|)"]
   exp_coef <- exp(coef(modell))
   conf_int <- exp(confint(modell))
   results <- round(data.frame(OR = exp_coef, ci.lb = conf_int[, 1], ci.ub = conf_int[, 2], pval = p_values), 3)
   results_sig <- subset(results, pval < 0.05)
-  
-  # ROC-Kurve und AUC-Wert
   observed_indices <- which(!is.na(data$overall_situation_Group))
   if (length(observed_indices) == 0) {
     stop("Keine gültigen Daten für die ROC-Kurve gefunden.")
@@ -29,22 +23,14 @@ perform_regression_analysis <- function(data, formula, covariates, reference_gro
   predicted_probabilities <- predict(modell, type = "response")[observed_indices]
   roc_curve <- pROC::roc(response = observed_outcome, predictor = predicted_probabilities)
   auc_val <- pROC::auc(roc_curve)
-  
-  # Plot ROC-Kurve
   plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
   legend("bottomright", legend = paste("AUC =", round(auc_val, 3)), col = "blue", lty = 1, cex = 0.8)
-  
-  # Variance Inflation Factors (VIF)
   vif_values <- round(car::vif(modell), 3)
-  
-  # Berechnung der Modellgüte
   deviance <- modell$deviance
   df_residual <- modell$df.residual
-  n <- nrow(data)  # Anzahl der Beobachtungen
+  n <- nrow(data) 
   R2cs <- 1 - exp((modell$deviance - modell$null.deviance) / n)
   R2n <- R2cs / (1 - exp(-modell$null.deviance / n))
- 
-  # Ergebnisse in einer Liste zurückgeben
   result_list <- list(
     modell = modell,
     model_summary = model_summary,
@@ -63,8 +49,6 @@ perform_regression_analysis <- function(data, formula, covariates, reference_gro
     roc_auc_df = data.frame(roc_auc = round(auc_val, 3)),
     vif_values_df = data.frame(vif_values = round(vif_values, 3))
   )
-  
-  # Exportiere die Ergebnisse in eine Excel-Datei
    write_xlsx(
     list(
       "Model Summary" = cbind(Variable = rownames(model_summary$coefficients), as.data.frame(model_summary$coefficients)),  
@@ -118,97 +102,33 @@ analysis_result <- perform_regression_analysis(
 # Vorwärtsselektion: welche Variablen zeigen eine Korrelation zur Gesamtsituation (p < 0,2)
 results <- data.frame(Variable = character(), Correlation = numeric(), P_Value = numeric(), stringsAsFactors = FALSE)
 for (var in alle_variablen) {
-  
   test_result <- cor.test(df_safepd$overall_situation_Group, df_safepd[[var]])
-  
-  alle_results <- rbind(alle_results, data.frame(
+  results <- rbind(results, data.frame(
     Variable = var, 
     Correlation = test_result$estimate, 
     P_Value = test_result$p.value
   ))
 }
-cortest_significant_results <- subset(alle_results, P_Value < 0.25)
+significant_results <- results[results$P_Value < 0.2]
+significant_vars <- significant_results$Variable[significant_results$P_Value < 0.2]
 forward_analysis_result <- perform_regression_analysis(
   data = df_safepd,
-  formula = overall_situation_Group ~ 
-    age +
-    #years_since_diagnosis +
-    gender_Group +
-    #nationality_Group +
-    martial_status_Group +
-    #school_graduation_Group +
-    persons_houshold_Group +
-    #professional_graduation_Group +
-    employment_status_Group +
-    UPDRS_I_Score +
-    UPDRS_II_Score +
-    FIMA_1_Hausarzt +
-    FIMA_1_Neurologe + 
-    FIMA_2_Ergotherapie +
-    FIMA_2_Sprachtherapie +
-    FIMA_3 +
-    FIMA_4 + 
-    FIMA_5 + 
-    FIMA_7 + 
-    FIMA_8 +
-    FIMA_11 +
-    FIMA_13_Anzahl,
+  formula = paste("overall_situation_Group ~", paste(significant_vars, collapse = " + ")),
   covariates = NULL,  
   export_path = "results/forward_regression_analysis_results.xlsx"  
 )
 
 # Modell 3: zusätzliche Rückwärtsselektion nach Vorwärtsselektion (cortest_significant_results)
 # gesättigtes Modell - Welche Variablen sollen in die Regression miteingehen?
-forward_model <- glm(df_safepd$overall_situation_Group ~ 
-                    #age + 
-                    #years_since_diagnosis + 
-                    gender_Group + 
-                    #nationality_Group + 
-                    martial_status_Group + 
-                    #school_graduation_Group + 
-                    persons_houshold_Group + 
-                    #professional_graduation_Group + 
-                    employment_status_Group + 
-                    UPDRS_I_Score +
-                    UPDRS_II_Score +
-                    FIMA_1_Hausarzt + 
-                    FIMA_1_Neurologe + 
-                    #FIMA_2_Krankengymnastik + 
-                    FIMA_2_Ergotherapie + 
-                    #FIMA_2_Sprachtherapie +
-                    FIMA_3 + 
-                    FIMA_4 + 
-                    FIMA_5 +
-                    #FIMA_6 +
-                    FIMA_7 +
-                    FIMA_8 +
-                    #FIMA_9 + 
-                    #FIMA_10 + 
-                    FIMA_11 + 
-                    #FIMA_12 + 
-                    FIMA_13_Anzahl,
-                  data = df_safepd, family = binomial, na.action = na.exclude)
+forward_model <- glm(paste("overall_situation_Group ~", paste(significant_vars, collapse = " + ")),
+    data = df_safepd,
+    family = binomial, 
+    na.action = na.exclude)
 for_back_final_model <- step(forward_model, direction = "backward")
+for_back_vars <- names(coef(for_back_final_model))[-1]
 for_back_analysis_result <- perform_regression_analysis(
   data = df_safepd,
-  formula = overall_situation_Group ~ 
-    #age +
-    #years_since_diagnosis +
-    gender_Group +
-    #nationality_Group +
-    #martial_status_Group +
-    #school_graduation_Group +
-    #persons_houshold_Group +
-    #professional_graduation_Group +
-    #employment_status_Group +
-    UPDRS_I_Score +
-    #UPDRS_II_Score +
-    FIMA_1_Hausarzt +
-    FIMA_1_Neurologe + 
-    #FIMA_2_Ergotherapie +
-    #FIMA_2_Sprachtherapie +
-    FIMA_3 +
-    FIMA_13_Anzahl,
+  formula = paste("overall_situation_Group ~", paste(for_back_vars, collapse = " + ")),
   covariates = NULL,  
   export_path = "results/for_back_regression_analysis_results.xlsx"  
 )
@@ -216,25 +136,13 @@ for_back_analysis_result <- perform_regression_analysis(
 # Modell 4: automatische Schrittweise Selektion 
 aut_full_model <- glm(overall_situation_Group ~ ., data = df_safepd[, c("overall_situation_Group", alle_variablen)], family = binomial)
 aut_step_model <- step(aut_full_model, direction = "both")
+aut_step_vars <- names(coef(aut_step_model))[-1]
 aut_analysis_result <- perform_regression_analysis(
   data = df_safepd,
-  formula = overall_situation_Group ~ 
-    age +
-    gender_Group +
-    UPDRS_I_Score +
-    FIMA_1_Hausarzt +
-    FIMA_1_Neurologe + 
-    FIMA_2_Ergotherapie +
-    FIMA_2_Sprachtherapie +
-    FIMA_3 + #nur 33 Personen, die einen ambulanten Pfelegediesnt hatten
-    FIMA_6 + #nur 11 Personen, die in Tagespflege waren
-    FIMA_11 + 
-    FIMA_13_Anzahl,
+  formula = paste("overall_situation_Group ~", paste(aut_step_vars, collapse = " + ")),
   covariates = NULL,  
   export_path = "results/aut_regression_analysis_results.xlsx"  
 )
-
-
 
 # Modellvergleich
 compare_models <- function(model1, model2) {
@@ -264,26 +172,6 @@ comparison_result4 <- compare_models(analysis_result$modell, aut_analysis_result
 
 comparison_result5 <- compare_models(forward_analysis_result$modell, aut_analysis_result$modell)
 # Keine Signifikant Bessere Erklärung der Daten --> automatische schrittweise Selektion "besser", da einfacher
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
