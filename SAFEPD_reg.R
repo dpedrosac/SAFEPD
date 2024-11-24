@@ -169,6 +169,7 @@ comparison_result3 <- compare_models(forward_analysis_result$modell, for_back_an
 
 comparison_result4 <- compare_models(analysis_result$modell, aut_analysis_result$modell)
 # Signifikant Bessere Erklärung der Daten durch das Modell nach automatischer schrittweiser Selektion
+# Sind wie zusätzlichen Variablen tatsächlich gute Prädiktoren? Insb. da z.T. kleine Fallzahlen in den Gruppen
 
 comparison_result5 <- compare_models(forward_analysis_result$modell, aut_analysis_result$modell)
 # Keine Signifikant Bessere Erklärung der Daten --> automatische schrittweise Selektion "besser", da einfacher
