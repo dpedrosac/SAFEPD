@@ -159,7 +159,7 @@ compare_models <- function(model1, model2) {
 
 # Anwendung Modellvergleich
 comparison_result <- compare_models(analysis_result$modell, forward_analysis_result$modell) 
-# Signifikant Bessere Erklärung der Daten durch Vorwärtsselektion
+# Keine Signifikant Bessere Erklärung der Daten durch Vorwärtsselektion
 
 comparison_result2 <- compare_models(analysis_result$modell, for_back_analysis_result$modell)
 # Keine Signifikant Bessere Erklärung der Daten durch kombinierte manuelle Vor- und Rückwärtsselektion
