@@ -1,3 +1,7 @@
+if (!dir.exists("results")) {
+  dir.create("results")
+}
+
 ## Hypothese: größeres Sicherheitsgefühl bei Männern in Population mit fortgeschrittenem Krebs / Parkinson (Milberg et al. / Akiyama et al. / Pedrosa et al.)
 ## Hypothese: negative Assoziation von Sicherheit & starker Symptomausprägung (Milberg et al. / Pedrosa et al.)
 
