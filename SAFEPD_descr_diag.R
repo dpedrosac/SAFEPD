@@ -1,10 +1,10 @@
 # Diagram: Altersverteilung
-SAFEPD$age_cat <- cut(SAFEPD$age, 
+df_safepd$age_cat <- cut(df_safepd$age, 
                       breaks = c(0, 45, seq(50, 85, by = 5), Inf), 
                       right = FALSE,  
                       labels = c("<45", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80-84", ">84"), 
                       include.lowest = TRUE)  
-hist_age <- table(SAFEPD$age_cat)
+hist_age <- table(df_safepd$age_cat)
 bar_positions <- barplot(hist_age, 
                          xlab = "Alter", 
                          ylab = "Häufigkeit", 
@@ -20,12 +20,12 @@ text(x = bar_positions,
      col = "black")
 
 # Diagram: Verteilung der Krankheitsdauer 
-SAFEPD$years_since_diagnosis_cat <- cut(SAFEPD$years_since_diagnosis, 
+df_safepd$years_since_diagnosis_cat <- cut(df_safepd$years_since_diagnosis, 
                                         breaks = c(0, 1, 6, 11, 16, 21, 26, Inf), 
                                         right = FALSE,   
                                         labels = c("<1", "1-5", "6-10", "11-15", "16-20", "21-25", ">25"), 
                                         include.lowest = TRUE)  
-hist_years_since_diagnosis <- table(SAFEPD$years_since_diagnosis_cat)
+hist_years_since_diagnosis <- table(df_safepd$years_since_diagnosis_cat)
 bar_positions <- barplot(hist_years_since_diagnosis, 
                          xlab = "Krankheitsdauer (Jahre)", 
                          ylab = "Häufigkeit", 
@@ -41,9 +41,9 @@ text(x = bar_positions,
      col = "black")
 
 # Diagramme: Punkteverteilung UPDRS 
-hist_UPDRS_I <- hist(SAFEPD$UPDRS_I_Score, xlab="UPDRS Score", ylab="Häufigkeit", main="UPDRS Teil 1", col="steelblue", ylim=c(0,80), breaks=4)
+hist_UPDRS_I <- hist(df_safepd$UPDRS_I_Score, xlab="UPDRS Score", ylab="Häufigkeit", main="UPDRS Teil 1", col="steelblue", ylim=c(0,80), breaks=4)
 text(hist_UPDRS_I$mids, hist_UPDRS_I$counts, labels = hist_UPDRS_I$counts, adj=c(0.5, -0.5))
-hist_UPDRS_II <- hist(SAFEPD$UPDRS_II_Score, xlab="UPDRS Score", ylab="Häufigkeit", main="UPDRS Teil 2", col="steelblue", ylim=c(0,100), xlim=c(0,50), breaks=4)
+hist_UPDRS_II <- hist(df_safepd$UPDRS_II_Score, xlab="UPDRS Score", ylab="Häufigkeit", main="UPDRS Teil 2", col="steelblue", ylim=c(0,100), xlim=c(0,50), breaks=4)
 text(hist_UPDRS_II$mids, hist_UPDRS_II$counts, labels = hist_UPDRS_II$counts, adj=c(0.5, -0.5))
 
 # Diagramme: FIMA
@@ -68,29 +68,29 @@ create_custom_histogram <- function(data, column, title) {
        col = "black")
   return(visit_counts)
 }
-Hausarzt_histogram <- create_custom_histogram(SAFEPD, "FIMA_1_Hausarzt", "Anzahl der Konsultationen des Hausarztes")
-Neurologe_histogram <- create_custom_histogram(SAFEPD, "FIMA_1_Neurologe", "Anzahl der Konsultationen des Neurologen")
+Hausarzt_histogram <- create_custom_histogram(df_safepd, "FIMA_1_Hausarzt", "Anzahl der Konsultationen des Hausarztes")
+Neurologe_histogram <- create_custom_histogram(df_safepd, "FIMA_1_Neurologe", "Anzahl der Konsultationen des Neurologen")
 
 # andere Fachärzte
 absolute_häufigkeiten_Arzt <- data.frame(
   Facharzt = c("Internist", "Gynaekologe", "Urologe", "Orthopaede", "Psychiater", "anderer Facharzt", "Notfallambulanz"),
   Ja = c(
-    sum(SAFEPD$FIMA_1_Internist_FA > 0),
-    sum(SAFEPD$FIMA_1_Gynaekologe > 0),
-    sum(SAFEPD$FIMA_1_Urologe > 0),
-    sum(SAFEPD$FIMA_1_Orthopaede > 0),
-    sum(SAFEPD$FIMA_1_Psychiater > 0),
-    sum(SAFEPD$FIMA_1_other > 0),
-    sum(SAFEPD$FIMA_1_Notfall_KH > 0)
+    sum(df_safepd$FIMA_1_Internist_FA > 0),
+    sum(df_safepd$FIMA_1_Gynaekologe > 0),
+    sum(df_safepd$FIMA_1_Urologe > 0),
+    sum(df_safepd$FIMA_1_Orthopaede > 0),
+    sum(df_safepd$FIMA_1_Psychiater > 0),
+    sum(df_safepd$FIMA_1_other > 0),
+    sum(df_safepd$FIMA_1_Notfall_KH > 0)
   ),
   Nein = c(
-    sum(SAFEPD$FIMA_1_Internist_FA == 0),
-    sum(SAFEPD$FIMA_1_Gynaekologe == 0),
-    sum(SAFEPD$FIMA_1_Urologe == 0),
-    sum(SAFEPD$FIMA_1_Orthopaede == 0),
-    sum(SAFEPD$FIMA_1_Psychiater == 0),
-    sum(SAFEPD$FIMA_1_other == 0),
-    sum(SAFEPD$FIMA_1_Notfall_KH == 0)
+    sum(df_safepd$FIMA_1_Internist_FA == 0),
+    sum(df_safepd$FIMA_1_Gynaekologe == 0),
+    sum(df_safepd$FIMA_1_Urologe == 0),
+    sum(df_safepd$FIMA_1_Orthopaede == 0),
+    sum(df_safepd$FIMA_1_Psychiater == 0),
+    sum(df_safepd$FIMA_1_other == 0),
+    sum(df_safepd$FIMA_1_Notfall_KH == 0)
   )
 )
 long_data_Arzt <- pivot_longer(absolute_häufigkeiten_Arzt, 
@@ -114,22 +114,22 @@ absolute_häufigkeiten_Therapien <- data.frame(
   Therapie = c("Krankengymnastik", "Ergotherapie", "Sprachtherapie", 
                "Heilpraktiker", "Chiropraktiker", "Osteopath", "Psychotherapeut"),
   Ja = c(
-    sum(SAFEPD$FIMA_2_Krankengymnastik > 0),
-    sum(SAFEPD$FIMA_2_Ergotherapie > 0),
-    sum(SAFEPD$FIMA_2_Sprachtherapie > 0),
-    sum(SAFEPD$FIMA_2_Heilpraktiker > 0),
-    sum(SAFEPD$FIMA_2_Chiropraktiker > 0),
-    sum(SAFEPD$FIMA_2_Osteopath > 0),
-    sum(SAFEPD$FIMA_2_Psychotherapeut > 0)
+    sum(df_safepd$FIMA_2_Krankengymnastik > 0),
+    sum(df_safepd$FIMA_2_Ergotherapie > 0),
+    sum(df_safepd$FIMA_2_Sprachtherapie > 0),
+    sum(df_safepd$FIMA_2_Heilpraktiker > 0),
+    sum(df_safepd$FIMA_2_Chiropraktiker > 0),
+    sum(df_safepd$FIMA_2_Osteopath > 0),
+    sum(df_safepd$FIMA_2_Psychotherapeut > 0)
   ),
   Nein = c(
-    sum(SAFEPD$FIMA_2_Krankengymnastik == 0),
-    sum(SAFEPD$FIMA_2_Ergotherapie == 0),
-    sum(SAFEPD$FIMA_2_Sprachtherapie == 0),
-    sum(SAFEPD$FIMA_2_Heilpraktiker == 0),
-    sum(SAFEPD$FIMA_2_Chiropraktiker == 0),
-    sum(SAFEPD$FIMA_2_Osteopath == 0),
-    sum(SAFEPD$FIMA_2_Psychotherapeut == 0)
+    sum(df_safepd$FIMA_2_Krankengymnastik == 0),
+    sum(df_safepd$FIMA_2_Ergotherapie == 0),
+    sum(df_safepd$FIMA_2_Sprachtherapie == 0),
+    sum(df_safepd$FIMA_2_Heilpraktiker == 0),
+    sum(df_safepd$FIMA_2_Chiropraktiker == 0),
+    sum(df_safepd$FIMA_2_Osteopath == 0),
+    sum(df_safepd$FIMA_2_Psychotherapeut == 0)
   )
 )
 long_data_Therapien <- pivot_longer(absolute_häufigkeiten_Therapien, 
@@ -154,18 +154,18 @@ ggplot(long_data_Therapien, aes(x = Therapie, y = Anzahl, fill = Besuch)) +
 absolute_häufigkeiten_Pflege <- data.frame(
   Variable = c("FIMA_3", "FIMA_4", "FIMA_5", "FIMA_6", "FIMA_7"),
   Ja = c(
-    sum(SAFEPD$FIMA_3 > 0),
-    sum(SAFEPD$FIMA_4 > 0),
-    sum(SAFEPD$FIMA_5 > 0),
-    sum(SAFEPD$FIMA_6 > 0),
-    sum(SAFEPD$FIMA_7 > 0)
+    sum(df_safepd$FIMA_3 > 0),
+    sum(df_safepd$FIMA_4 > 0),
+    sum(df_safepd$FIMA_5 > 0),
+    sum(df_safepd$FIMA_6 > 0),
+    sum(df_safepd$FIMA_7 > 0)
   ),
   Nein = c(
-    sum(SAFEPD$FIMA_3 == 0),
-    sum(SAFEPD$FIMA_4 == 0),
-    sum(SAFEPD$FIMA_5 == 0),
-    sum(SAFEPD$FIMA_6 == 0),
-    sum(SAFEPD$FIMA_7 == 0)
+    sum(df_safepd$FIMA_3 == 0),
+    sum(df_safepd$FIMA_4 == 0),
+    sum(df_safepd$FIMA_5 == 0),
+    sum(df_safepd$FIMA_6 == 0),
+    sum(df_safepd$FIMA_7 == 0)
   )
 )
 long_data_Pflege <- pivot_longer(absolute_häufigkeiten_Pflege, 
@@ -191,7 +191,7 @@ ggplot(long_data_Pflege, aes(x = Variable, y = Anzahl, fill = Besuch)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 # Pflegegrade
-hist_Pflegegrade <- hist(SAFEPD$FIMA_8,  
+hist_Pflegegrade <- hist(df_safepd$FIMA_8,  
                          breaks = seq(-0.5, 5.5, by = 1),   
                          col = "steelblue",                 
                          main = "Häufigkeit der Pflegegrade",
@@ -205,16 +205,16 @@ text(hist_Pflegegrade$mids, hist_Pflegegrade$counts, labels = hist_Pflegegrade$c
 absolute_häufigkeiten_KH <- data.frame(
   Variable = c("FIMA_9", "FIMA_10", "FIMA_11", "FIMA_12"),
   Ja = c(
-    sum(SAFEPD$FIMA_9 > 0),
-    sum(SAFEPD$FIMA_10 > 0),
-    sum(SAFEPD$FIMA_11 > 0),
-    sum(SAFEPD$FIMA_12 > 0)
+    sum(df_safepd$FIMA_9 > 0),
+    sum(df_safepd$FIMA_10 > 0),
+    sum(df_safepd$FIMA_11 > 0),
+    sum(df_safepd$FIMA_12 > 0)
   ),
   Nein = c(
-    sum(SAFEPD$FIMA_9 == 0),
-    sum(SAFEPD$FIMA_10 == 0),
-    sum(SAFEPD$FIMA_11 == 0),
-    sum(SAFEPD$FIMA_12 == 0)
+    sum(df_safepd$FIMA_9 == 0),
+    sum(df_safepd$FIMA_10 == 0),
+    sum(df_safepd$FIMA_11 == 0),
+    sum(df_safepd$FIMA_12 == 0)
   )
 )
 long_data_KH <- pivot_longer(absolute_häufigkeiten_KH, 
@@ -258,9 +258,9 @@ berechne_alle_häufigkeiten <- function(daten, spalten_namen) {
 zwei_palette <- c("lightblue","steelblue")
 
 # Berechnung der Häufigkeiten für alle Fragen
-alle_häufigkeiten <- berechne_alle_häufigkeiten(SAFEPD, VarSAFEPDQA)
-VarSAFEPDQA_Group <- paste(VarSAFEPDQA, "_Group", sep = "")
-alle_häufigkeiten_Group <- berechne_alle_häufigkeiten(SAFEPD, VarSAFEPDQA_Group)
+alle_häufigkeiten <- berechne_alle_häufigkeiten(df_safepd, Vardf_safepdQA)
+Vardf_safepdQA_Group <- paste(Vardf_safepdQA, "_Group", sep = "")
+alle_häufigkeiten_Group <- berechne_alle_häufigkeiten(df_safepd, Vardf_safepdQA_Group)
 
 # Gruppierung der Häufigkeiten in 1+2+3 und 4+5
 gruppen_haeufigkeiten <- function(haeufigkeit) {
@@ -273,8 +273,8 @@ gruppen_haeufigkeiten <- function(haeufigkeit) {
 alle_häufigkeiten_gruppen <- lapply(alle_häufigkeiten, gruppen_haeufigkeiten)
 
 # Erstellung eines DataFrames für die Visualisierung
-kategorien <- rep(VarSAFEPDQA, each = 2)
-gruppen <- rep(c("restricted", "unrestricted"), length(VarSAFEPDQA))
+kategorien <- rep(Vardf_safepdQA, each = 2)
+gruppen <- rep(c("restricted", "unrestricted"), length(Vardf_safepdQA))
 häufigkeiten <- unlist(alle_häufigkeiten_gruppen)
 häufigkeitstabelle <- data.frame(Kategorie = kategorien, Gruppe = gruppen, Häufigkeit = häufigkeiten)
 
@@ -283,13 +283,13 @@ krankheitsfaktoren <- c("gait_insecurity_fall", "pain", "gastrointestinal_sympto
 häufigkeitstabelle_phys <- subset(häufigkeitstabelle, Kategorie %in% krankheitsfaktoren)
 # Namen der Kategorien ändern
 häufigkeitstabelle_phys$Kategorie <- factor(häufigkeitstabelle_phys$Kategorie, levels = krankheitsfaktoren,
-                                            labels = c("Gait Insecurity", "Pain", "Gastrointestinal Symptoms", "Urinary Symptoms"))
+                                            labels = c("Gangunsicherheit", "Schmerzen", "Magen-Darm-Symptome", "Harnsymptome"))
 # Gestapeltes Säulendiagramm
 ggplot(häufigkeitstabelle_phys, aes(x = Kategorie, y = Häufigkeit, fill = Gruppe)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
   geom_text(aes(label = Häufigkeit), vjust = -0.5, position = position_dodge(width = 0.9), size = 3) +
-  labs(x = "", y = "frequency", title = "disease domain: physical symptoms") +
-  scale_fill_manual(values = zwei_palette, name = "percieved safety", labels = c("restricted", "unrestricted")) +
+  labs(x = "", y = "Häufigkeit", title = "Domäne Krankheit: physische Manifestationen") +
+  scale_fill_manual(values = zwei_palette, name = "Sicherheitsempfinden", labels = c("eingeschränkt", "uneingeschränkt")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
   
@@ -298,13 +298,13 @@ krankheitsfaktoren2 <- c("side_effects_complications", "chaging_symptom_severity
 häufigkeitstabelle_dis2 <- subset(häufigkeitstabelle, Kategorie %in% krankheitsfaktoren2)
 # Namen der Kategorien ändern
 häufigkeitstabelle_dis2$Kategorie <- factor(häufigkeitstabelle_dis2$Kategorie, levels = krankheitsfaktoren2,
-                                            labels = c("Side Effects", "Changing Symptom Severity", "Uncertain Future", "Other Diseases"))
+                                            labels = c("Nebenwirkungen & Komplikationen", "wechselnde Symptomeschwere", "ungewisse Zukunft", "andere Erkrankungen"))
 # Gestapeltes Säulendiagramm
 ggplot(häufigkeitstabelle_dis2, aes(x = Kategorie, y = Häufigkeit, fill = Gruppe)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
   geom_text(aes(label = Häufigkeit), vjust = -0.5, position = position_dodge(width = 0.9), size = 3) +
-  labs(x = "", y = "frequency", title = "disease domain: therapy and progression") +
-  scale_fill_manual(values = zwei_palette, name = "percieved safety", labels = c("restricted", "unrestricted")) +
+  labs(x = "", y = "Häufigkeit", title = "Domäne Krankheit: Therapie & Progression") +
+  scale_fill_manual(values = zwei_palette, name = "Sicherheitsempfinden", labels = c("eingeschränkt", "uneingeschränkt")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -313,13 +313,13 @@ krankheitsfaktoren3 <- c("mental_abilities", "mental_symptoms")
 häufigkeitstabelle_dis3 <- subset(häufigkeitstabelle, Kategorie %in% krankheitsfaktoren3)
 # Namen der Kategorien ändern
 häufigkeitstabelle_dis3$Kategorie <- factor(häufigkeitstabelle_dis3$Kategorie, levels = krankheitsfaktoren3,
-                                            labels = c("Mental Abilities", "Mental Symptoms"))
+                                            labels = c("Nachlassen geistiger Fähigkeiten", "psychiatrische Symptome"))
 # Gestapeltes Säulendiagramm
 ggplot(häufigkeitstabelle_dis3, aes(x = Kategorie, y = Häufigkeit, fill = Gruppe)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
   geom_text(aes(label = Häufigkeit), vjust = -0.5, position = position_dodge(width = 0.9), size = 3) +
-  labs(x = "", y = "frequency", title = "disease domain: psychiatric symptoms") +
-  scale_fill_manual(values = zwei_palette, name = "percieved safety", labels = c("restricted", "unrestricted")) +
+  labs(x = "", y = "Häufigkeit", title = "Domäne Krankheit: Psychiatrische Manifestationen") +
+  scale_fill_manual(values = zwei_palette, name = "Sicherheitsempfinden", labels = c("eingeschränkt", "uneingeschränkt")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -328,13 +328,13 @@ krankheitsfaktoren4 <- c("loneliness", "not_at_peace_with_myself")
 häufigkeitstabelle_dis4 <- subset(häufigkeitstabelle, Kategorie %in% krankheitsfaktoren4)
 # Namen der Kategorien ändern
 häufigkeitstabelle_dis4$Kategorie <- factor(häufigkeitstabelle_dis4$Kategorie, levels = krankheitsfaktoren4,
-                                            labels = c("Loneliness", "Inner Peace"))
+                                            labels = c("Einsamkeit", "Seelenfrieden"))
 # Gestapeltes Säulendiagramm
 ggplot(häufigkeitstabelle_dis4, aes(x = Kategorie, y = Häufigkeit, fill = Gruppe)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
   geom_text(aes(label = Häufigkeit), vjust = -0.5, position = position_dodge(width = 0.9), size = 3) +
-  labs(x = "", y = "frequency", title = "emotional domain") +
-  scale_fill_manual(values = zwei_palette, name = "percieved insecurity", labels = c("restricted", "unrestricted")) +
+  labs(x = "", y = "Häufigkeit", title = "Domäne Emotionen") +
+  scale_fill_manual(values = zwei_palette, name = "Sicherheitsempfinden", labels = c("eingeschränkt", "uneingeschränkt")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -343,13 +343,13 @@ krankheitsfaktoren5 <- c("everyday_problems", "daily_routine", "participation_in
 häufigkeitstabelle_dis5 <- subset(häufigkeitstabelle, Kategorie %in% krankheitsfaktoren5)
 # Namen der Kategorien ändern
 häufigkeitstabelle_dis5$Kategorie <- factor(häufigkeitstabelle_dis5$Kategorie, levels = krankheitsfaktoren5,
-                                            labels = c("Everyday Problems", "Disruption of Daily Routines", "Road Traffic"))
+                                            labels = c("alltägliche Aktivitäten", "Unterbrechung täglicher Routinen", "Teilnahme am Straßenverkehr"))
 # Gestapeltes Säulendiagramm
 ggplot(häufigkeitstabelle_dis5, aes(x = Kategorie, y = Häufigkeit, fill = Gruppe)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
   geom_text(aes(label = Häufigkeit), vjust = -0.5, position = position_dodge(width = 0.9), size = 3) +
-  labs(x = "", y = "frequency", title = "social domain: daily life") +
-  scale_fill_manual(values = zwei_palette, name = "percieved safety", labels = c("restricted", "unrestricted")) +
+  labs(x = "", y = "Häufigkeit", title = "Domäne Sozial: Alltägliches Leben") +
+  scale_fill_manual(values = zwei_palette, name = "Sicherheitsempfinden", labels = c("eingeschränkt", "uneingeschränkt")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -358,13 +358,13 @@ krankheitsfaktoren6 <- c("family_role", "conflicts_with_relatives", "overload_am
 häufigkeitstabelle_dis6 <- subset(häufigkeitstabelle, Kategorie %in% krankheitsfaktoren6)
 # Namen der Kategorien ändern
 häufigkeitstabelle_dis6$Kategorie <- factor(häufigkeitstabelle_dis6$Kategorie, levels = krankheitsfaktoren6,
-                                            labels = c("Family Role", "Conflicts with Relatives", "Overload Among People", "Stigmatisation"))
+                                            labels = c("Ausübung der Familienrolle", "Konflikte mit Verwandten", "Überforderung unter Menschen", "Stigmatisierung"))
 # Gestapeltes Säulendiagramm
 ggplot(häufigkeitstabelle_dis6, aes(x = Kategorie, y = Häufigkeit, fill = Gruppe)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
   geom_text(aes(label = Häufigkeit), vjust = -0.5, position = position_dodge(width = 0.9), size = 3) +
-  labs(x = "", y = "frequency", title = "social domain: roles and interactions") +
-  scale_fill_manual(values = zwei_palette, name = "percieved safety", labels = c("restricted", "unrestricted")) +
+  labs(x = "", y = "Häufigkeit", title = "Domäne Sozial: Rollenbild & Interaktionen") +
+  scale_fill_manual(values = zwei_palette, name = "Sicherheitsempfinden", labels = c("eingeschränkt", "uneingeschränkt")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -373,13 +373,13 @@ krankheitsfaktoren7 <- c("victim_to_crime", "financial_worries")
 häufigkeitstabelle_dis7 <- subset(häufigkeitstabelle, Kategorie %in% krankheitsfaktoren7)
 # Namen der Kategorien ändern
 häufigkeitstabelle_dis7$Kategorie <- factor(häufigkeitstabelle_dis7$Kategorie, levels = krankheitsfaktoren7,
-                                            labels = c("Victim of Crime", "Financial Worries"))
+                                            labels = c("Opfer von Kriminalität", "finanzielle Sorgen"))
 # Gestapeltes Säulendiagramm
 ggplot(häufigkeitstabelle_dis7, aes(x = Kategorie, y = Häufigkeit, fill = Gruppe)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
   geom_text(aes(label = Häufigkeit), vjust = -0.5, position = position_dodge(width = 0.9), size = 3) +
-  labs(x = "", y = "frequency", title = "social domain: percieved risks") +
-  scale_fill_manual(values = zwei_palette, name = "percieved safety", labels = c("restricted", "unrestricted")) +
+  labs(x = "", y = "Häufigkeit", title = "Domäne Sozial: Risiken") +
+  scale_fill_manual(values = zwei_palette, name = "Sicherheitsempfinden", labels = c("eingeschränkt", "uneingeschränkt")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -388,13 +388,13 @@ krankheitsfaktoren8 <- c("access_healthcare", "nursing_care")
 häufigkeitstabelle_dis8 <- subset(häufigkeitstabelle, Kategorie %in% krankheitsfaktoren8)
 # Namen der Kategorien ändern
 häufigkeitstabelle_dis8$Kategorie <- factor(häufigkeitstabelle_dis8$Kategorie, levels = krankheitsfaktoren8,
-                                            labels = c("Access to Healthcare", "Nursing Care"))
+                                            labels = c("Zugang zum Gesundheitswesen", "Probleme der pflegerischen Versorgung"))
 # Gestapeltes Säulendiagramm
 ggplot(häufigkeitstabelle_dis8, aes(x = Kategorie, y = Häufigkeit, fill = Gruppe)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
   geom_text(aes(label = Häufigkeit), vjust = -0.5, position = position_dodge(width = 0.9), size = 3) +
-  labs(x = "", y = "frequency", title = "healthcare domain: access") +
-  scale_fill_manual(values = zwei_palette, name = "percieved safety", labels = c("restricted", "unrestricted")) +
+  labs(x = "", y = "Häufigkeit", title = "Domäne Gesundheitswesen: Zugang zur Gesundheitsversorgung") +
+  scale_fill_manual(values = zwei_palette, name = "Sicherheitsempfinden", labels = c("eingeschränkt", "uneingeschränkt")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -403,26 +403,25 @@ krankheitsfaktoren9 <- c("lack_of_information", "communication_with_me", "commun
 häufigkeitstabelle_dis9 <- subset(häufigkeitstabelle, Kategorie %in% krankheitsfaktoren9)
 # Namen der Kategorien ändern
 häufigkeitstabelle_dis9$Kategorie <- factor(häufigkeitstabelle_dis9$Kategorie, levels = krankheitsfaktoren9,
-                                            labels = c("Lack of Information", "Communication with Patient", "Communication Between Professionals"))
+                                            labels = c("Mangel an Informationen", "Kommunikationsprobleme mit dem Patienten", "Kommunikationsprobleme zwischen Fachpersonal"))
 # Gestapeltes Säulendiagramm
 ggplot(häufigkeitstabelle_dis9, aes(x = Kategorie, y = Häufigkeit, fill = Gruppe)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
   geom_text(aes(label = Häufigkeit), vjust = -0.5, position = position_dodge(width = 0.9), size = 3) +
-  labs(x = "", y = "frequency", title = "healthcare domain: communication") +
-  scale_fill_manual(values = zwei_palette, name = "percieved safety", labels = c("restricted", "unrestricted")) +
+  labs(x = "", y = "Häufigkeit", title = "Domäne Gesundheitswesen: Kommunikation & Information") +
+  scale_fill_manual(values = zwei_palette, name = "Sicherheitsemfpinden", labels = c("eingeschränkt", "uneingeschränkt")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 # Filter für Overall Situation
 häufigkeitstabelle_overall <- subset(häufigkeitstabelle, Kategorie == "overall_situation")
 # Gestapeltes Säulendiagramm
-ggplot(häufigkeitstabelle_overall, aes(x = "Overall Situation", y = Häufigkeit, fill = Gruppe)) +
+ggplot(häufigkeitstabelle_overall, aes(x = "Gesamtsituation", y = Häufigkeit, fill = Gruppe)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
   geom_text(aes(label = Häufigkeit), vjust = -0.5, position = position_dodge(width = 0.9), size = 3) +
-  labs(x = "", y = "frequency", title = "Overall Situation") +
-  scale_fill_manual(values = zwei_palette, name = "percieved safety", labels = c("restricted", "unrestricted")) +
+  labs(x = "", y = "Häufigkeit", title = "Wenn ich meine Gesamtsituation betrachte, fühlte ich mich in den vergangenen
+vier Wochen ...") +
+  scale_fill_manual(values = zwei_palette, name = "", labels = c("unsicher", "sicher")) +
   theme_minimal() 
-
-
 
 
