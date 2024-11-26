@@ -1,3 +1,11 @@
+# TODO: I would add some sort of explanation here, so that everyone knows what the function does, ... 
+
+# Code developed by Florian Kuschel, Anna and David Pedrosa
+
+# Version 2.1 # 2024-26-11, # Added the comment to rather use something like the tableone package
+
+#TODO: This one is certainly very meticulous but maybe a bit difficult to digest. Why don't you try the tableone package and stick to the most important categories/values? This should probably be the first result of your dissertation/manuscript. (cf. https://cran.r-project.org/web/packages/tableone/vignettes/introduction.html)
+
 # Soziodemographische Daten
 describe(df_safepd$age, IQR = TRUE)
 describe(subset(df_safepd$age, df_safepd$gender == 1))

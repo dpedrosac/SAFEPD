@@ -1,18 +1,78 @@
-## Test auf Normalverteilung
-VarNVTest <- c("age","gender", "nationality", "martial_status", "years_since_diagnosis", "persons_houshold", "school_graduation", "professional_graduation", "employment_status", "UPDRS_I_Score", "UPDRS_II_Score", "lack_of_information", "uncertain_future",	"chaging_symptom_severity",	"gait_insecurity_fall",	"pain",	"gastrointestinal_symptoms",	"urinary_symptoms",	"mental_abilities",	"mental_symptoms",	"other_disease",	"nursing_care",	"side_effects_complications",	"access_healthcare",	"communication_with_me",	"communication_between_professionals",	"loneliness",	"everyday_problems",	"daily_routine",	"overload_among_people",	"pejorativ_looks_comments",	"family_role",	"conflicts_with_relatives",	"victim_to_crime",	"financial_worries",	"not_at_peace_with_myself",	"participation_in_road_traffic",	"overall_situation")
+# TODO: I would add some sort of explanation here, so that everyone knows what the function does, ... 
 
-shapiro_tests <- lapply(VarNVTest, function(variable) {
-  shapiro_test_result <- shapiro.test(df_safepd[[variable]])
-  return(data.frame(Variable = variable, p_value = shapiro_test_result$p.value, 
-                    is_normal = shapiro_test_result$p.value > 0.05))})
-shapiro_results_table <- do.call(rbind, shapiro_tests)
+# Code developed by Florian Kuschel and David Pedrosa
 
-qqnorm(df_safepd$age, main = "Q-Q-Plot Alter")
-qqline(df_safepd$age)
+# Version 2.1 # 2024-26-11, # Added some additional options for enhancing readability in the code and output in the results folder
 
-qqnorm(df_safepd$UPDRS_I_Score, main = "Q-Q-Plot UPDRS 1")
-qqline(df_safepd$UPDRS_I_Score)
+# Variables for normality test
+VarNVTest <- c(
+  "age", "gender", "nationality", "martial_status", "years_since_diagnosis", 
+  "persons_houshold", "school_graduation", "professional_graduation", 
+  "employment_status", "UPDRS_I_Score", "UPDRS_II_Score", "lack_of_information", 
+  "uncertain_future", "chaging_symptom_severity", "gait_insecurity_fall", 
+  "pain", "gastrointestinal_symptoms", "urinary_symptoms", "mental_abilities", 
+  "mental_symptoms", "other_disease", "nursing_care", "side_effects_complications", 
+  "access_healthcare", "communication_with_me", "communication_between_professionals", 
+  "loneliness", "everyday_problems", "daily_routine", "overload_among_people", 
+  "pejorativ_looks_comments", "family_role", "conflicts_with_relatives", 
+  "victim_to_crime", "financial_worries", "not_at_peace_with_myself", 
+  "participation_in_road_traffic", "overall_situation"
+)
 
-qqnorm(df_safepd$UPDRS_II_Score, main = "Q-Q-Plot UPDRS 2")
-qqline(df_safepd$UPDRS_II_Score)
+# Shapiro-Wilk normality tests
+shapiro_results <- lapply(VarNVTest, function(variable) {
+  if (is.numeric(df_safepd[[variable]])) {
+    test <- shapiro.test(df_safepd[[variable]])
+    data.frame(
+      Variable = variable, 
+      p_value = test$p.value, 
+      is_normal = test$p.value > 0.05
+    )
+  } else {
+    data.frame(Variable = variable, p_value = NA, is_normal = NA)
+  }
+})
 
+shapiro_results_table <- do.call(rbind, shapiro_results)
+write.csv(shapiro_results_table, file.path(wdir, "results", "suppl.table1.shapiro_results.csv"), row.names = FALSE)
+
+
+# Create Q-Q plots for selected variables
+plot_age <- ggplot(df_safepd, aes(sample = age)) +
+  stat_qq() + 
+  stat_qq_line() + 
+  labs(title = "Q-Q Plot: Age") +
+  theme_minimal()
+
+plot_updrs1 <- ggplot(df_safepd, aes(sample = UPDRS_I_Score)) +
+  stat_qq() + 
+  stat_qq_line() + 
+  labs(title = "Q-Q Plot: UPDRS I Score") +
+  theme_minimal()
+
+plot_updrs2 <- ggplot(df_safepd, aes(sample = UPDRS_II_Score)) +
+  stat_qq() + 
+  stat_qq_line() + 
+  labs(title = "Q-Q Plot: UPDRS II Score") +
+  theme_minimal()
+
+# Create an empty spacer plot for the 2x2 layout
+empty_plot <- ggplot() + 
+  theme_void() + 
+  labs(title = "")
+
+combined_plot <- (plot_age + plot_updrs1) / 
+                 (plot_updrs2 + empty_plot) +
+  plot_annotation(
+    title = "Q-Q Plots for Selected Variables"
+  )
+
+message("Normality for different scores in the population. This figure illustrates the Q-Q-plots for age (A), UPDRS I Score (B), and UPDRS II Score (C) in the dataset")
+
+#TODO: why these scores?
+
+# Save the combined plot as a PDF
+pdf_file <- file.path("results", "suppl.figure1.qq_plots.pdf")
+ggsave(pdf_file, plot = combined_plot, width = 8, height = 8)
+
+message("Q-Q plots saved to ", pdf_file)

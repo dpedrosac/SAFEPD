@@ -1,3 +1,12 @@
+# TODO: I would add some sort of explanation here, so that everyone knows what the function does ... 
+# Code developed by Florian Kuschel, Anna and David Pedrosa
+
+# Version 2.1 # 2024-26-11, # Added one minor comment
+
+
+
+#TODO: These are quite nice to illustrate results, but it's nozt trivial to decide for any of those, I guess?!
+
 # Diagramme: Alter und Krankheitsdauer
 create_histogram <- function(data, column, breaks, labels, xlab, ylab, title, ylim = NULL) {
   data[[paste0(column, "_cat")]] <- cut(data[[column]], 
