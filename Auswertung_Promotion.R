@@ -1,4 +1,4 @@
-# Run analyses for a meta-analysis on place of death of people with Parkinson's Disease (PwPD): 
+# Run analyses for a corss-sectional study on perceived safety of people with Parkinson's Disease (PwPD): 
 # Code developed by Florian Kuschel and David Pedrosa
 
 # Version 2.1 # 2024-14-11, # Smaller adjustments to make the code readble for different collaborators
@@ -25,7 +25,6 @@ df_safepd <- read_excel(
   n_max = 210                       # Load only the first 210 rows
 )
 
-
 ## Dichotomisierung / Imputation
 source("SAFEPD_dich.R")
 # write.xlsx(SAFEPD, "SAFEPD_imputeddata.xlsx", rowNames = FALSE)
@@ -35,7 +34,7 @@ source("SAFEPD_dist.R")
 
 ## deskriptive Analyse
 source("SAFEPD_descr.R")
-source("SAFEPD_descr_diag.R")
+source("SAFEPD_descr_diag.R") 
 
 ## Korrelationsanalyse
 # source("SAFEPD_corr.R")
