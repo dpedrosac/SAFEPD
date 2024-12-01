@@ -1,42 +1,55 @@
 # Run analyses for a corss-sectional study on perceived safety of people with Parkinson's Disease (PwPD): 
-# Code developed by Florian Kuschel and David Pedrosa
+# Code developed by Florian Kuschel, Anna and David Pedrosa
 
-# Version 2.1 # 2024-14-11, # Smaller adjustments to make the code readble for different collaborators
+# Version 2.2 # 2024-26-11, # Smaller adjustments to make the code readble for different collaborators
 
-## Load required packages from external script
-source("load_packages.R")
-
-## Load data according to the username
+# ==== Preamble 
+# Set respective folders according to username to facilitate collaboration
 username <- Sys.getenv("USERNAME")
 
-if (username == "dpedrosac") {
-  wdir <- "/media/storage/SAFEPD/"
-  datadir <- file.path(wdir, "data")
-} else {
-  wdir <- "~/SAFEPD/"
-  datadir <- file.path(wdir, "data") # you need to move the file to this folder. I have added folder to .gitignore
-}
-
-# Load the SAFEPD dataset with specific range and column types
-df_safepd <- read_excel(
-  file.path(datadir, "SAFEPD_imputeddata.xlsx"),
-  range = "A1:DF209",
-  col_types = rep("numeric", 110),  # Set 110 columns as numeric
-  n_max = 210                       # Load only the first 210 rows
+# Define working and data directories
+wdir <- if_else(
+  username == "dpedrosac",
+  "/media/storage/SAFEPD/",
+  "~/SAFEPD/" # Collaborators need to ensure this directory exists
 )
 
+# Create the results folder if it doesn't exist
+if (!dir.exists(file.path(wdir, "results"))) {
+  dir.create(file.path(wdir, "results"))
+}
+
+datadir <- file.path(wdir, "data") # Data directory path
+message("Working directory set to: ", wdir)  # Log message for debugging
+
+# Load required packages
+setwd(wdir)
+source("load_packages.R")
+
+# ==== load Data and preprocess 
+## 1. Load SAFEPD raw (?) dataset
+df_safepd <- read_xlsx(
+  file.path(datadir, "SAFEPD_imputeddata.xlsx"),
+  range = "A1:DF209",       # Specific range of data to load
+  col_types = rep("numeric", 110),  # Specify column types
+  n_max = 210              # Load only the first 210 rows
+)
+
+# ====
 ## Dichotomisierung / Imputation
 source("SAFEPD_dich.R")
 # write.xlsx(SAFEPD, "SAFEPD_imputeddata.xlsx", rowNames = FALSE)
 
-## Normalvertilung
+# ====
+## Check for normal distribution
 source("SAFEPD_dist.R")
 
-## deskriptive Analyse
+# ====
+## Descriptive analyses
 source("SAFEPD_descr.R")
 source("SAFEPD_descr_diag.R") 
 
-## Korrelationsanalyse
+## Korrelationsanalyse #TODO: Not used?
 # source("SAFEPD_corr.R")
 
 ## Regressionsanalyse
