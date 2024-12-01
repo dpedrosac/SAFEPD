@@ -1,7 +1,7 @@
 # Run analyses for a corss-sectional study on perceived safety of people with Parkinson's Disease (PwPD): 
 # Code developed by Florian Kuschel, Anna and David Pedrosa
 
-# Version 2.2 # 2024-01-12, # updated the code with suggestions
+# Version 2.2 # 2024-01-12, # updated the code with suggestions, added one comments/question on load Data
 
 # ==== Preamble 
 # Set respective folders according to username to facilitate collaboration
@@ -28,6 +28,7 @@ source("load_packages.R")
 
 # ==== load Data and preprocess 
 ## 1. Load SAFEPD raw (?) dataset
+  # I am loading the imputed data for the following analysis
 df_safepd <- read_xlsx(
   file.path(datadir, "SAFEPD_imputeddata.xlsx"),
   range = "A1:DF209",       # Specific range of data to load
