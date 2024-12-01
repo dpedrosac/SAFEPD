@@ -1,6 +1,4 @@
-if (!dir.exists("results")) {
-  dir.create("results")
-}
+# Development and Comparison of Logistic Regression Models to Analyze Predictors of Overall Situation Assessment
 
 ## Hypothese: größeres Sicherheitsgefühl bei Männern in Population mit fortgeschrittenem Krebs / Parkinson (Milberg et al. / Akiyama et al. / Pedrosa et al.)
 ## Hypothese: negative Assoziation von Sicherheit & starker Symptomausprägung (Milberg et al. / Pedrosa et al.)
@@ -76,7 +74,7 @@ alle_variablen <- c("age", "years_since_diagnosis", "gender_Group", "nationality
                     "FIMA_3", "FIMA_4", "FIMA_5", "FIMA_6", "FIMA_7", "FIMA_8", "FIMA_9", 
                     "FIMA_10", "FIMA_11", "FIMA_12", "FIMA_13_Anzahl")
 
-# Modell 1: Variablen wie zuerst besprochen
+# Modell 1: Model with variables that are to be included, as first agreed 
 analysis_result <- perform_regression_analysis(
   data = df_safepd,
   formula = overall_situation_Group ~
@@ -98,8 +96,8 @@ analysis_result <- perform_regression_analysis(
 )
 
 
-# Modell 2: manuelle Vortwärtsselektion aus allen Variablen
-# Vorwärtsselektion: welche Variablen zeigen eine Korrelation zur Gesamtsituation (p < 0,2)
+# Modell 2: Model with variables, after forward selection. Test for correlation with p < 0.2
+# Forward selection: which variables show a correlation with the overall situation (p < 0.2)
 results <- data.frame(Variable = character(), Correlation = numeric(), P_Value = numeric(), stringsAsFactors = FALSE)
 for (var in alle_variablen) {
   test_result <- cor.test(df_safepd$overall_situation_Group, df_safepd[[var]])
@@ -118,8 +116,7 @@ forward_analysis_result <- perform_regression_analysis(
   export_path = "results/forward_regression_analysis_results.xlsx"  
 )
 
-# Modell 3: zusätzliche Rückwärtsselektion nach Vorwärtsselektion (cortest_significant_results)
-# gesättigtes Modell - Welche Variablen sollen in die Regression miteingehen?
+# Modell 3: Model with variables after additional backward selection after forward selection (cortest_significant_results)
 forward_model <- glm(paste("overall_situation_Group ~", paste(significant_vars, collapse = " + ")),
     data = df_safepd,
     family = binomial, 
@@ -133,7 +130,7 @@ for_back_analysis_result <- perform_regression_analysis(
   export_path = "results/for_back_regression_analysis_results.xlsx"  
 )
 
-# Modell 4: automatische Schrittweise Selektion 
+# Modell 4: Model with variables through automatic step-by-step selection 
 aut_full_model <- glm(overall_situation_Group ~ ., data = df_safepd[, c("overall_situation_Group", alle_variablen)], family = binomial)
 aut_step_model <- step(aut_full_model, direction = "both")
 aut_step_vars <- names(coef(aut_step_model))[-1]
@@ -144,7 +141,7 @@ aut_analysis_result <- perform_regression_analysis(
   export_path = "results/aut_regression_analysis_results.xlsx"  
 )
 
-# Modellvergleich
+# function for comparison of models
 compare_models <- function(model1, model2) {
   LRT <- abs(model1$deviance - model2$deviance)  
   df_LRT <- abs(model1$df.residual - model2$df.residual)  
@@ -157,7 +154,7 @@ compare_models <- function(model1, model2) {
   return(result)
 }
 
-# Anwendung Modellvergleich
+# apply function for comparison of models 
 comparison_result <- compare_models(analysis_result$modell, forward_analysis_result$modell) 
 # Keine Signifikant Bessere Erklärung der Daten durch Vorwärtsselektion
 
