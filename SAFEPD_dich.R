@@ -1,7 +1,7 @@
 # Imputation of data and recoding the variables in order to prepare for subsequent analyses in the SAFEPD study 
 # Code developed by Florian Kuschel, Anna and David Pedrosa
 
-# Version 2.2 # 2024-26-11, # updated the code with suggestions; added some comments/questions
+# Version 2.2 # 2024-01-12, # updated the code with suggestions; added some comments/questions
 
 
 # TODO: Is this part actually done before, as the data is called data_imputed?! If so, I would not omit it
