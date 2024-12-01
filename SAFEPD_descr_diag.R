@@ -1,7 +1,7 @@
 # generate and visualize aggregated frequency data and histograms for various health-related factors and safety questionnaire
 # Code developed by Florian Kuschel, Anna and David Pedrosa
 
-# Version 2.2 # 2024-26-11, # added loops to downsize the codelength; added some comments/questions
+# Version 2.2 # 2024-01-12, # added loops to downsize the codelength; added some comments/questions
 
 # diagrams for age und years since diagnosis
 # function visualizings data
