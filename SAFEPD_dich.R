@@ -133,3 +133,4 @@ df_safepd <- df_safepd %>%
     FIMA_16_Group = as.numeric(FIMA_16 != 1)   # 0 = gesetzlich versichert
   )
 
+# TODO: For the time being, I'm not sure if this makes sense. I haven't seen the analyses but so far you are getting rid of a lot of variance as you are omitting parts of the questionnaire and creating very simple variables, which may hamper analyses later. But again, I'm not sure about this.
