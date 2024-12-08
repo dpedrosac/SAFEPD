@@ -23,7 +23,8 @@ packages <- c(
   "openxlsx",
   "ggplot2",
   "writexl",
-  "patchwork"
+  "patchwork",
+  "readxl"
 )
 
 ## Now load or install & load all if necessary
