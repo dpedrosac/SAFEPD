@@ -1,14 +1,16 @@
 # Run analyses for a corss-sectional study on perceived safety of people with Parkinson's Disease (PwPD): 
 # Code developed by Florian Kuschel, Anna and David Pedrosa
 
-# Version 2.2 # 2024-01-12, # updated the code with suggestions, added one comments/question on load Data
+# Version 2.2 # 2024-26-11, # Smaller adjustments to make the code readble for different collaborators
+# Version 2.3 # 2024-01-12, # updated code with suggestions, added one comment/question in load_data 
+# Version 2.4 # 2024-04-12, # 
 
 # ==== Preamble 
 # Set respective folders according to username to facilitate collaboration
 username <- Sys.getenv("USERNAME")
 
 # Define working and data directories
-wdir <- if_else(
+wdir <- ifelse(
   username == "dpedrosac",
   "/media/storage/SAFEPD/",
   "~/SAFEPD/" # Collaborators need to ensure this directory exists
@@ -28,7 +30,7 @@ source("load_packages.R")
 
 # ==== load Data and preprocess 
 ## 1. Load SAFEPD raw (?) dataset
-  # I am loading the imputed data for the following analysis
+# TODO: I am loading the imputed data for the following analysis; why not running teh imputation here?
 df_safepd <- read_xlsx(
   file.path(datadir, "SAFEPD_imputeddata.xlsx"),
   range = "A1:DF209",       # Specific range of data to load
