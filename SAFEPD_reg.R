@@ -74,7 +74,7 @@ alle_variablen <- c("age", "years_since_diagnosis", "gender_Group", "nationality
                     "FIMA_3", "FIMA_4", "FIMA_5", "FIMA_6", "FIMA_7", "FIMA_8", "FIMA_9", 
                     "FIMA_10", "FIMA_11", "FIMA_12", "FIMA_13_Anzahl")
 
-# Modell 1: Model with variables that are to be included, as first agreed 
+# Modell 1: Variablen wie zuerst besprochen
 analysis_result <- perform_regression_analysis(
   data = df_safepd,
   formula = overall_situation_Group ~
@@ -96,8 +96,8 @@ analysis_result <- perform_regression_analysis(
 )
 
 
-# Modell 2: Model with variables, after forward selection. Test for correlation with p < 0.2
-# Forward selection: which variables show a correlation with the overall situation (p < 0.2)
+# Modell 2: manuelle Vortwärtsselektion aus allen Variablen
+# Vorwärtsselektion: welche Variablen zeigen eine Korrelation zur Gesamtsituation (p < 0,2)
 results <- data.frame(Variable = character(), Correlation = numeric(), P_Value = numeric(), stringsAsFactors = FALSE)
 for (var in alle_variablen) {
   test_result <- cor.test(df_safepd$overall_situation_Group, df_safepd[[var]])
@@ -107,7 +107,7 @@ for (var in alle_variablen) {
     P_Value = test_result$p.value
   ))
 }
-significant_results <- results[results$P_Value < 0.2]
+significant_results <- results[results$P_Value < 0.2, ]
 significant_vars <- significant_results$Variable[significant_results$P_Value < 0.2]
 forward_analysis_result <- perform_regression_analysis(
   data = df_safepd,
@@ -116,7 +116,8 @@ forward_analysis_result <- perform_regression_analysis(
   export_path = "results/forward_regression_analysis_results.xlsx"  
 )
 
-# Modell 3: Model with variables after additional backward selection after forward selection (cortest_significant_results)
+# Modell 3: zusätzliche Rückwärtsselektion nach Vorwärtsselektion (cortest_significant_results)
+# gesättigtes Modell - Welche Variablen sollen in die Regression miteingehen?
 forward_model <- glm(paste("overall_situation_Group ~", paste(significant_vars, collapse = " + ")),
     data = df_safepd,
     family = binomial, 
@@ -130,7 +131,7 @@ for_back_analysis_result <- perform_regression_analysis(
   export_path = "results/for_back_regression_analysis_results.xlsx"  
 )
 
-# Modell 4: Model with variables through automatic step-by-step selection 
+# Modell 4: automatische Schrittweise Selektion 
 aut_full_model <- glm(overall_situation_Group ~ ., data = df_safepd[, c("overall_situation_Group", alle_variablen)], family = binomial)
 aut_step_model <- step(aut_full_model, direction = "both")
 aut_step_vars <- names(coef(aut_step_model))[-1]
@@ -141,7 +142,7 @@ aut_analysis_result <- perform_regression_analysis(
   export_path = "results/aut_regression_analysis_results.xlsx"  
 )
 
-# function for comparison of models
+# Modellvergleich
 compare_models <- function(model1, model2) {
   LRT <- abs(model1$deviance - model2$deviance)  
   df_LRT <- abs(model1$df.residual - model2$df.residual)  
@@ -151,10 +152,13 @@ compare_models <- function(model1, model2) {
     df = df_LRT,
     p_value = p_value
   )
+  print(paste0("Likelihood Ratio Test (LRT): ", round(LRT, 2)))
+  print(paste0("Degrees of Freedom: ", df_LRT))
+  print(paste0("p-value: ", signif(p_value, 4)))
   return(result)
 }
 
-# apply function for comparison of models 
+# Anwendung Modellvergleich
 comparison_result <- compare_models(analysis_result$modell, forward_analysis_result$modell) 
 # Keine Signifikant Bessere Erklärung der Daten durch Vorwärtsselektion
 
@@ -166,12 +170,6 @@ comparison_result3 <- compare_models(forward_analysis_result$modell, for_back_an
 
 comparison_result4 <- compare_models(analysis_result$modell, aut_analysis_result$modell)
 # Signifikant Bessere Erklärung der Daten durch das Modell nach automatischer schrittweiser Selektion
-# Sind wie zusätzlichen Variablen tatsächlich gute Prädiktoren? Insb. da z.T. kleine Fallzahlen in den Gruppen
 
 comparison_result5 <- compare_models(forward_analysis_result$modell, aut_analysis_result$modell)
-# Keine Signifikant Bessere Erklärung der Daten --> automatische schrittweise Selektion "besser", da einfacher
-
-
-
-
-
+# Signifikant Bessere Erklärung der Daten durch nach Modell nach manueller Vorwärtsselektion (komplexeres Modell)
