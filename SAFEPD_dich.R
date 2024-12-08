@@ -21,26 +21,26 @@
 # dichotomisation of sociodemographic data
 df_safepd <- df_safepd %>%
   mutate(
-    gender_Group = factor(gender, 
+    gender_Group = as.numeric(gender, 
                           levels = c(0, 1), 
                           labels = c("female", "male")),
-    nationality_Group = factor(ifelse(nationality == 0, 1, 0), 
+    nationality_Group = as.numeric(ifelse(nationality == 0, 1, 0), 
                                levels = c(0, 1), 
                                labels = c("other", "german")),
-    martial_status_Group = factor(ifelse(martial_status == 1, 1, 0), 
+    martial_status_Group =  as.numeric(ifelse(martial_status == 1, 1, 0), 
                                   levels = c(0, 1), 
                                   labels = c("unmarried", "married")),
     persons_houshold = if_else(persons_houshold == 0, 1, persons_houshold),
-    persons_houshold_Group = factor(ifelse(persons_houshold == 1, 1, 0), 
+    persons_houshold_Group = as.numeric(ifelse(persons_houshold == 1, 1, 0), 
                                     levels = c(0, 1), 
                                     labels = c("not living alone", "living alone")),
-    school_graduation_Group = factor(ifelse(school_graduation == 3, 1, 0), 
+    school_graduation_Group = as.numeric(ifelse(school_graduation == 3, 1, 0), 
                                      levels = c(0, 1), 
                                      labels = c("other", "Abitur")),
-    professional_graduation_Group = factor(ifelse(professional_graduation == 4, 1, 0), 
+    professional_graduation_Group = as.numeric(ifelse(professional_graduation == 4, 1, 0), 
                                            levels = c(0, 1), 
                                            labels = c("without graduation", "graduation")),
-    employment_status_Group = factor(ifelse(employment_status == 4, 1, 0), 
+    employment_status_Group = as.numeric(ifelse(employment_status == 4, 1, 0), 
                                      levels = c(0, 1), 
                                      labels = c("not retired", "retired"))
   )
